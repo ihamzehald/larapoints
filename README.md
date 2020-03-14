@@ -10,3 +10,10 @@ TBD
 - register
 - login
 - logout
+
+JWT auth endpoints:
+
+- /auth/jwt/login
+- /auth/jwt/refresh
+- /auth/jwt/me
+- /auth/jwt/logout
