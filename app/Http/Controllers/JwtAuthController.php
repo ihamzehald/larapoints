@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
-class AuthController extends Controller
+class JwtAuthController extends Controller
 {
     /**
      * Create a new AuthController instance.
@@ -15,7 +15,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api_jwt', ['except' => ['login']]);
     }
 
     /**
@@ -25,9 +25,10 @@ class AuthController extends Controller
      */
     public function login()
     {
+
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth("api_jwt")->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -41,7 +42,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(auth("api_jwt")->user());
     }
 
     /**
@@ -51,7 +52,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        auth("api_jwt")->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -63,7 +64,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(auth("api_jwt")->refresh());
     }
 
     /**
@@ -75,10 +76,11 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth("api_jwt")->factory()->getTTL() * 60
         ]);
     }
 

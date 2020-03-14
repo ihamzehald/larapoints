@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 /**
- * Auth endpoints
+ * Token auth endpoints
  */
 
 Route::group(['middleware' => 'auth:api'], function() {
@@ -26,7 +26,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 });
 
 Route::post('register', "Auth\RegisterController@register");
-
 Route::post('login', 'Auth\LoginController@login');
 
 /**
@@ -36,13 +35,13 @@ Route::post('login', 'Auth\LoginController@login');
 Route::group([
 
     'middleware' => 'api',
-    'prefix' => 'auth'
+    'prefix' => 'auth/jwt/'
 
 ], function ($router) {
 
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
+    Route::post('login', 'JwtAuthController@login');
+    Route::post('logout', 'JwtAuthController@logout');
+    Route::post('refresh', 'JwtAuthController@refresh');
+    Route::post('me', 'JwtAuthController@me');
 
 });
