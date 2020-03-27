@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth\JWT;
 
 use App\Mail\SendResetPasswordOTPMail;
 use App\ResetPasswordOTP;
+use App\ResetPasswordOTPVerification;
 use App\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Password;
 use App\Http\Helpers\Validators;
 use App\Http\Helpers\Generators;
 use App\Http\Helpers\Constants;
+use Illuminate\Support\Facades\Validator;
 
 class JwtAuthController extends Controller
 {
@@ -31,7 +33,7 @@ class JwtAuthController extends Controller
     public function __construct()
     {
         $this->middleware("auth:api_jwt")
-            ->except(["login", "sendResetPasswordOTP"]);
+            ->except(["login", "sendResetPasswordOTP", "verifyOTP"]);
     }
 
     /**
@@ -141,10 +143,14 @@ class JwtAuthController extends Controller
                     $resetPasswordOtpModel->status = Constants::RESET_PASSWORD_OTP_CREATED;
 
                     if ($resetPasswordOtpModel->save()) {
+                        $isUniqueToken = true;
                         Mail::to($user)->send(new SendResetPasswordOTPMail($user, $resetPasswordOtpModel));
 
                         if(empty(Mail::failures())){
-                            return response()->json(["data"=>[], "message" => "OTP email sent successfully."], 200);
+                            return response()->json([
+                                "data"=>[],
+                                "message" => "OTP email sent successfully."
+                            ], Constants::HTTP_SUCCESS);
                         }
                     }
                 }
@@ -155,9 +161,78 @@ class JwtAuthController extends Controller
             "data"=>[],
             "message" => "Oops, something went went wrong while trying to send your OTP."
         ],
-            400);
+            Constants::HTTP_ERROR);
 
     }
 
+    /**
+     * @param $otp
+     * Verification steps:
+     * 1- check if the OTP exists.
+     * 2- check if the OTP not expired based on the OTP_LIFETIME const
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyOTP(Request $request){
+
+        $request->validate(['otp' => 'required']);
+
+        $otp = $request->get("otp", null);
+
+        $resetPasswordOTPModel = ResetPasswordOTP::where("otp", $otp)
+                ->where("status", Constants::RESET_PASSWORD_OTP_CREATED)
+                ->first();
+
+        if($resetPasswordOTPModel){
+            if($this->isOTPValid($resetPasswordOTPModel, Constants::OTP_LIFETIME)){
+                // generate otp tmp verification token
+
+                $isUniqueToken = false;
+
+                while(!$isUniqueToken){
+                    $uniqueOTPVerificationToken = $this->generateOTPVerificationToken();
+                    $resetPasswordOTPVerification = ResetPasswordOTPVerification::where('token', $uniqueOTPVerificationToken)
+                        ->exists();
+
+                    if(!$resetPasswordOTPVerification){
+                        $resetPasswordOTPVerificationModel = new ResetPasswordOTPVerification;
+                        $resetPasswordOTPVerificationModel->user_id = $resetPasswordOTPModel->user_id;
+                        $resetPasswordOTPVerificationModel->otp_id = $resetPasswordOTPModel->id;
+                        $resetPasswordOTPVerificationModel->token = $uniqueOTPVerificationToken;
+                        $resetPasswordOTPVerificationModel->status = Constants::RESET_PASSWORD_OTP_VERIFICATION_CREATED;
+
+                        if($resetPasswordOTPVerificationModel->save()){
+                            $resetPasswordOTPModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
+                            if($resetPasswordOTPModel->save()){
+                                return response()->json([
+                                    "data" => [
+                                        "verification_token" => $uniqueOTPVerificationToken
+                                    ],
+                                    "message" => "OTP verified successfully"
+                                ], Constants::HTTP_SUCCESS);
+                            }
+                        }
+                    }
+                }
+
+
+            }else{
+                return response()->json([
+                    "data" => [],
+                    "message" => "This OTP expired."
+                ], Constants::HTTP_ERROR);
+            }
+        }else{
+            return response()->json([
+                "data" => [],
+                "message" => "This OTP not valid."
+            ], Constants::HTTP_ERROR);
+        }
+
+            return response()->json([
+                "data" => [],
+                "message" => "Oops, something went wrong."
+            ], Constants::HTTP_ERROR);
+
+    }
 
 }

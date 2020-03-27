@@ -3,6 +3,7 @@
 namespace App\Http\Helpers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 trait Validators{
 
@@ -12,9 +13,20 @@ trait Validators{
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    protected function isEmailValid(Request $request)
-    {
+    public function isEmailValid(Request $request) {
         $request->validate(['email' => 'required|email']);
     }
+
+    public function isOTPValid($otp, $lifetime){
+        return $this->isExpired($otp->created_at, $lifetime);
+    }
+
+    public function isExpired($date, $lifetime){
+        return Carbon::parse($date)->addHours($lifetime)->gte(Carbon::now())
+            ? true
+            : false;
+    }
+
+
 
 }
