@@ -17,3 +17,6 @@ JWT auth endpoints:
 - /auth/jwt/refresh
 - /auth/jwt/me
 - /auth/jwt/logout
+- /auth/jwt/password/request/reset
+- /auth/jwt/password/otp/verify
+- /auth/jwt/password/reset
