@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
@@ -33,7 +34,12 @@ class JwtAuthController extends Controller
     public function __construct()
     {
         $this->middleware("auth:api_jwt")
-            ->except(["login", "sendResetPasswordOTP", "verifyOTP"]);
+            ->except([
+                "login",
+                "sendResetPasswordOTP",
+                "verifyOTP",
+                "resetPassword"
+            ]);
     }
 
     /**
@@ -43,10 +49,9 @@ class JwtAuthController extends Controller
      */
     public function login()
     {
-
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth("api_jwt")->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -60,7 +65,7 @@ class JwtAuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(auth("api_jwt")->user());
     }
 
     /**
@@ -70,7 +75,7 @@ class JwtAuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        auth("api_jwt")->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -82,7 +87,7 @@ class JwtAuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(auth("api_jwt")->refresh());
     }
 
     /**
@@ -98,12 +103,11 @@ class JwtAuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth("api_jwt")->factory()->getTTL() * 60
         ]);
     }
 
     /**
-     *
      * @param Request $request
      * @return mixed|\Symfony\Component\HttpFoundation\ParameterBag
      */
@@ -123,6 +127,8 @@ class JwtAuthController extends Controller
 
             ResetPasswordOTP::where('user_id', $user->id)
                 ->update(["status" => Constants::RESET_PASSWORD_OTP_EXPIRED]);
+            
+            // TODO: move this logic to generateOTP
 
             while (!$isUniqueToken) {
 
@@ -188,6 +194,8 @@ class JwtAuthController extends Controller
 
                 $isUniqueToken = false;
 
+                // TODO: move this logic to generateOTPVerificationToken
+
                 while(!$isUniqueToken){
                     $uniqueOTPVerificationToken = $this->generateOTPVerificationToken();
                     $resetPasswordOTPVerification = ResetPasswordOTPVerification::where('token', $uniqueOTPVerificationToken)
@@ -213,8 +221,6 @@ class JwtAuthController extends Controller
                         }
                     }
                 }
-
-
             }else{
                 return response()->json([
                     "data" => [],
@@ -235,4 +241,49 @@ class JwtAuthController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(Request $request){
+        $request->validate([
+            'verification_token' => 'required',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $verificationToken =  $request->get("verification_token", null);
+        $password = $request->get("password", null);
+
+        $resetPasswordOTPVerificationModel = ResetPasswordOTPVerification::where("token", $verificationToken)
+            ->where("status", Constants::RESET_PASSWORD_OTP_CREATED)
+            ->first();
+
+        if($resetPasswordOTPVerificationModel){
+
+            if($this->isOTPVerificationTokenValid($resetPasswordOTPVerificationModel, Constants::OTP_VERIFICATION_TOKEN_LIFETIME)){
+                $user = User::where('id', $resetPasswordOTPVerificationModel->user_id)->first();
+                if($user){
+                    $user->password = Hash::make($password);
+                    if($user->save()){
+                        $resetPasswordOTPVerificationModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
+                        if($resetPasswordOTPVerificationModel->save()){
+                            return response()->json([
+                                "data" => [],
+                                "message" => "Password reset successfully."
+                            ], Constants::HTTP_SUCCESS);
+                        }
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+            "data" => [],
+            "message" => "Something went wrong while trying to reset your password."
+        ], Constants::HTTP_ERROR);
+
+    }
+
 }
+
+

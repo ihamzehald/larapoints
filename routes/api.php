@@ -41,6 +41,7 @@ Route::group([
     Route::post('login', 'Auth\JWT\JwtAuthController@login');
     Route::post('password/request/reset', 'Auth\JWT\JwtAuthController@sendResetPasswordOTP');
     Route::post('password/otp/verify', 'Auth\JWT\JwtAuthController@verifyOTP');
+    Route::post('password/reset', 'Auth\JWT\JwtAuthController@resetPassword');
 });
 
 

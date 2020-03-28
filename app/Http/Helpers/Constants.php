@@ -13,6 +13,13 @@ Class Constants{
     const RESET_PASSWORD_OTP_EXPIRED = 3;
 
     /**
+     * OTP lifetime
+     * In hours
+     */
+
+    const OTP_LIFETIME = 1;
+
+    /**
      * OTP verification statuses
      */
 
@@ -21,11 +28,12 @@ Class Constants{
     const RESET_PASSWORD_OTP_VERIFICATION_EXPIRED = 3;
 
     /**
-     * OTP lifetime
+     * OTP verification token lifetime
      * In hours
      */
 
-    const OTP_LIFETIME = 1;
+    const OTP_VERIFICATION_TOKEN_LIFETIME = 1;
+
 
     /**
      * HTTP statuses
