@@ -8,6 +8,45 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * @OA\Schema(@OA\Xml(name="User"))
+ * @OA\Property(
+ *   property="id",
+ *   type="string",
+ *   description="User ID"
+ * )
+ *
+ * @OA\Property(
+ *   property="name",
+ *   type="string",
+ *   description="User name"
+ * )
+ * @OA\Property(
+ *   property="email",
+ *   type="string",
+ *   description="User email"
+ * )
+ * @OA\Property(
+ *   property="email_verified_at",
+ *   type="string",
+ *   description="Email verified at"
+ * )
+ * @OA\Property(
+ *   property="created_at",
+ *   type="string",
+ *   description="Created at"
+ * )
+ *  * @OA\Property(
+ *   property="updated_at",
+ *   type="string",
+ *   description="Updated at"
+ * )
+ *  * @OA\Property(
+ *   property="api_token",
+ *   type="string",
+ *   description="Api token (used for token auth)"
+ * )
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;

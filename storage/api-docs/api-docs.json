@@ -1,0 +1,455 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "L5 OpenApi",
+        "description": "L5 Swagger OpenApi description",
+        "contact": {
+            "email": "darius@matulionis.lt"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://larapoints.loc/api",
+            "description": "LaraPoints host"
+        }
+    ],
+    "paths": {
+        "/user/auth/jwt/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "JWT login",
+                "description": "Login a user and generate JWT token",
+                "operationId": "jwtLogin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "User email",
+                                        "type": "string",
+                                        "example": "ihamzehald@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "User password",
+                                        "type": "string",
+                                        "example": "larapoints123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "JWT access token",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Token type",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Token expiration in miliseconds",
+                                            "type": "integer",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+                                        "token_type": "bearer",
+                                        "expires_in": 3600
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/user/auth/jwt/me": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get the authenticated User",
+                "description": "Get the authenticated User",
+                "operationId": "jwtMe",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerJWTAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/auth/jwt/logout": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Log the user out",
+                "description": "Log the user out (Invalidate the token)",
+                "operationId": "jwtLogout",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Successfully logged out",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerJWTAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/auth/jwt/refresh": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Refresh a JWT token",
+                "description": "Referesh a JWT token based on the passed JWT token in the header",
+                "operationId": "jwtRefresh",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "JWT access token",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Token type",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Token expiration in miliseconds",
+                                            "type": "integer",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+                                        "token_type": "bearer",
+                                        "expires_in": 3600
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerJWTAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/auth/jwt/password/request/reset": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Request reset password",
+                "description": "Send OTP code to user email",
+                "operationId": "jwtPasswordRequestReset",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "User email",
+                                        "type": "string",
+                                        "example": "ihamzehald@gmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "data wraper",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {}
+                                            }
+                                        },
+                                        "message": {
+                                            "description": "Response nessage",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/user/auth/jwt/password/otp/verify": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Verify OTP code",
+                "description": "SVerify OTP code and return temporary verification code",
+                "operationId": "jwtVerifyOTP",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "otp": {
+                                        "description": "User OTP",
+                                        "type": "string",
+                                        "example": "wyHyJ9"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "data wraper",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "verification_token": {
+                                                            "description": "OTP verification token to be used on reset password",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "message": {
+                                            "description": "Response nessage",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/user/auth/jwt/password/reset": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Reset user password",
+                "description": "Reset user password",
+                "operationId": "jwtVerifyOTP",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "verification_token": {
+                                        "description": "verification token from (/user/auth/jwt/password/otp/verify) end point",
+                                        "type": "string",
+                                        "example": "SEJJJvD8YbpfXDljgMI3RAXySokNXIRmPT7yB7H2NZcnNSHTJgWUVJyAaExGvDPo"
+                                    },
+                                    "password": {
+                                        "description": "New password",
+                                        "type": "string",
+                                        "example": "larapoints123"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "New password confirmation",
+                                        "type": "string",
+                                        "example": "larapoints123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "data wraper",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {}
+                                            }
+                                        },
+                                        "message": {
+                                            "description": "Response nessage",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "properties": {
+                    "id": {
+                        "schema": "User",
+                        "description": "User ID",
+                        "type": "string"
+                    },
+                    "name": {
+                        "schema": "User",
+                        "description": "User name",
+                        "type": "string"
+                    },
+                    "email": {
+                        "schema": "User",
+                        "description": "User email",
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "schema": "User",
+                        "description": "Email verified at",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "schema": "User",
+                        "description": "Created at",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "schema": "User",
+                        "description": "Updated at",
+                        "type": "string"
+                    },
+                    "api_token": {
+                        "schema": "User",
+                        "description": "Api token (used for token auth)",
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerJWTAuth": {
+                "type": "http",
+                "description": "Oauth2 security",
+                "name": "oauth2",
+                "in": "header",
+                "flows": {
+                    "clientCredentials": {
+                        "tokenUrl": "oauth/token",
+                        "scopes": []
+                    }
+                },
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
