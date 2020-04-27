@@ -13,7 +13,7 @@ class DropApiTokenColumnFromUser extends Migration
      */
     public function up()
     {
-        Schema::table('user', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['api_token']);
         });
     }
@@ -25,7 +25,7 @@ class DropApiTokenColumnFromUser extends Migration
      */
     public function down()
     {
-        Schema::table('user', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('api_token', 60)->unique()->nullable();
         });
     }
