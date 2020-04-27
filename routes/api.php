@@ -14,22 +14,6 @@ use Illuminate\Http\Request;
 */
 
 
-
-Route::middleware('auth:api_token')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-/**
- * Token auth endpoints
- */
-
-Route::group(['middleware' => 'auth:api'], function() {
-    Route::post('logout', 'Auth\LoginController@logout');
-});
-
-Route::post('register', "Auth\RegisterController@register");
-Route::post('login', 'Auth\LoginController@login');
-
 /**
  * JWT auth endpoints
  */
@@ -45,3 +29,6 @@ Route::group([
     Route::post('password/otp/verify', 'Auth\JWT\JwtAuthController@verifyOTP');
     Route::post('password/reset', 'Auth\JWT\JwtAuthController@resetPassword');
 });
+
+
+

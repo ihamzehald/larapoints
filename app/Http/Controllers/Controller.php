@@ -10,10 +10,10 @@ use Illuminate\Routing\Controller as BaseController;
 /**
  * @OA\Info(
  *      version="1.0.0",
- *      title="L5 OpenApi",
- *      description="L5 Swagger OpenApi description",
+ *      title="LaraPoints",
+ *      description="LaraPoints REST API skeleton documentation",
  *      @OA\Contact(
- *          email="darius@matulionis.lt"
+ *          email="ihamzehald@gmail.com"
  *      ),
  *     @OA\License(
  *         name="Apache 2.0",

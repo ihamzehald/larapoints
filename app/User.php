@@ -78,18 +78,6 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * @author Hamza al darawsheh <ihamzehald@gmail.com>
-     * @return mixed|string as api_token
-     * Generates api_token as the access token to be used from the client side
-     */
-    public function generateToken()
-    {
-        $this->api_token = Str::random(60);
-        $this->save();
-
-        return $this->api_token;
-    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

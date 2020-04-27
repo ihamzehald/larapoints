@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "L5 OpenApi",
-        "description": "L5 Swagger OpenApi description",
+        "title": "LaraPoints",
+        "description": "LaraPoints REST API skeleton documentation",
         "contact": {
             "email": "darius@matulionis.lt"
         },
