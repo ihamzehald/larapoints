@@ -130,7 +130,7 @@ class JwtAuthController extends Controller
      * Swagger UI documentation (OA)
      *
      * @OA\Get(
-     *   path="/user/auth/jwt/me",
+     *   path="/user/me",
      *   tags={"User"},
      *   summary="Get the authenticated User",
      *   description="Get the authenticated User",
