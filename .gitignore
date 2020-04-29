@@ -24,9 +24,9 @@ Homestead.json
 
 
 # Uncomment the following lines to ignore .env files
-#.env
+.env
 #.env.backup
-
+#.env.example
 
 # ignore PHP storm files
 .idea/*
