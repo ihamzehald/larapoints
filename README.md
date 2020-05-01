@@ -158,7 +158,7 @@ http://larapoints.loc/api/documentation
 <br/>
 LaraPoints integrated with L5-Swagger library to auto generate the documentation of the API endpoints using Open API Annotations.
 <br/>
-
+<br/>
 **Example:**
 <br/>
 
