@@ -11,9 +11,11 @@ The goal of this project is to create a ready to use REST API skeleton to help d
 
 <br/>
 <br/>
+
 ```shell script
 $ git clone https://github.com/ihamzehald/larapoints.git
 ```
+
 <br/>
 <br/>
 
@@ -29,6 +31,7 @@ $ cd larapoints
 ```shell script
 $ composer install
 ```
+
 <br/>
 
 
@@ -57,6 +60,7 @@ Apply the database migrations:
 ```shell script
 $ php artisan migrate
 ```
+
 Configure your MailGun integration by changing the values of the following vaeiables:
 <br/>
 <br/>
@@ -89,6 +93,7 @@ Create the a virtual host config file (larapoints.loc.conf) for example.
 **larapoints.loc.conf** sample:
 <br/>
 <br/>
+
 ```shell script
 
 <VirtualHost *:80>
@@ -117,11 +122,13 @@ Enable larapoints virtual host:
 ```shell script
 $ a2ensite larapoints.loc.conf 
 ```
+
 <br/>
 
 Add the virtual host server name to the hosts file (/etc/hosts):
 <br/>
 <br/>
+
 ```shell script
 127.0.1.1       larapoints.loc
 ```
@@ -191,6 +198,7 @@ LaraPoints integrated with L5-Swagger library to auto generate the documentation
 
 **POST request:**
 <br/>
+
 ```shell script
     /**
      * Get a JWT via given credentials.
