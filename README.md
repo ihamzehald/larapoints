@@ -272,3 +272,7 @@ LaraPoints integrated with L5-Swagger library to auto generate the documentation
      */
 ```
 
+**To generate the API documentation apply the following command:**
+```shell script
+$ php artisan l5-swagger:generate
+````
