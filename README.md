@@ -66,7 +66,7 @@ First change ACTIVATE_API_KEY=false to ACTIVATE_API_KEY=true
 Then change the value of API_KEY to your secured API key.
 <br/>
 <br/>
-This tool is recommended to generate secure API key, it is recommended to generate a complex key of greater than or equal to 64 characters.
+This tool is recommended to generate secure API key, it is recommended to generate a complex key  greater than or equal to 64 characters.
 <br/>
 <br/>
 https://passwordsgenerator.net
@@ -75,7 +75,7 @@ https://passwordsgenerator.net
 Then share this key securely with your API clients.
 <br/>
 <br/>
-Note: once ACTIVATE_API_KEY set to true, all your API clients should send **x-api-key** header and it's value should match API_KEY.
+Note: once ACTIVATE_API_KEY set to true, all your API clients should send  (x-api-key)  header and it's value should match API_KEY.
 <br/>
 <br/>
 Apply the database migrations:
