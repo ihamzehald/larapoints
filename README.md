@@ -51,7 +51,31 @@ DB_USERNAME={ Your DB user name }
 DB_PASSWORD={ Your DB password }
 <br/>
 <br/>
-
+**Supporting API key** _(Recommended for mobile applications and private APIs)_:
+<br/>
+<br/>
+If you are developing an API for a mobile application or your API is private your API client should 
+send API key using x-api-key header, this is disabled by default, to enable that change the following variables values.
+<br/>
+<br/>
+First change ACTIVATE_API_KEY=false to ACTIVATE_API_KEY=true
+<br/>
+<br/>
+Then change the value of API_KEY to your secured API key.
+<br/>
+<br/>
+This tool is recommended to generate secure API key, it is recommended to generate a complex key of greater than or equal to 64 characters.
+<br/>
+<br/>
+https://passwordsgenerator.net
+<br/>
+<br/>
+Then share this key securely with your API clients.
+<br/>
+<br/>
+Note: once ACTIVATE_API_KEY set to true, all your API clients should send **x-api-key** header and it's value should match API_KEY.
+<br/>
+<br/>
 Apply the database migrations:
 
 <br/>

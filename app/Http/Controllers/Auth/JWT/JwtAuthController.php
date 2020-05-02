@@ -10,7 +10,6 @@ use App\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -19,8 +18,8 @@ use App\Http\Helpers\Validators;
 use App\Http\Helpers\Generators;
 use App\Http\Helpers\Constants;
 use Illuminate\Support\Facades\Validator;
-
-class JwtAuthController extends Controller
+use \App\Http\Controllers\API\APIController;
+class JwtAuthController extends APIController
 {
 
     use Validators;
@@ -33,6 +32,8 @@ class JwtAuthController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->middleware("auth:api_jwt")
             ->except([
                 "login",
