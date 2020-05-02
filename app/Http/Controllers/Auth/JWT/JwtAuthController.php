@@ -50,8 +50,8 @@ class JwtAuthController extends Controller
      * Swagger UI documentation (OA)
      *
      * @OA\Post(
-     *   path="/user/auth/jwt/login",
-     *   tags={"User"},
+     *   path="/auth/jwt/login",
+     *   tags={"Auth"},
      *   summary="JWT login",
      *   description="Login a user and generate JWT token",
      *   operationId="jwtLogin",
@@ -123,38 +123,6 @@ class JwtAuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    /**
-     * Get the authenticated User.
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * Swagger UI documentation (OA)
-     *
-     * @OA\Get(
-     *   path="/user/me",
-     *   tags={"User"},
-     *   summary="Get the authenticated User",
-     *   description="Get the authenticated User",
-     *   operationId="jwtMe",
-     *  @OA\Response(
-     *         response="200",
-     *         description="ok",
-     *         content={
-     *             @OA\MediaType(
-     *                 mediaType="application/json",
-     *                 @OA\Schema(ref="#/components/schemas/User")
-     *              )
-     *         }
-     *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
-     *  security={
-     *         {"bearerJWTAuth": {}}
-     *     }
-     * )
-     */
-    public function me()
-    {
-        return response()->json(auth("api_jwt")->user());
-    }
 
 
     /**
@@ -165,8 +133,8 @@ class JwtAuthController extends Controller
      * Swagger UI documentation (OA)
      *
      * @OA\Post(
-     *   path="/user/auth/jwt/logout",
-     *   tags={"User"},
+     *   path="/auth/jwt/logout",
+     *   tags={"Auth"},
      *   summary="Log the user out",
      *   description="Log the user out (Invalidate the token)",
      *   operationId="jwtLogout",
@@ -206,8 +174,8 @@ class JwtAuthController extends Controller
      * Swagger UI documentation (OA)
      *
      * @OA\Post(
-     *   path="/user/auth/jwt/refresh",
-     *   tags={"User"},
+     *   path="/auth/jwt/refresh",
+     *   tags={"Auth"},
      *   summary="Refresh a JWT token",
      *   description="Referesh a JWT token based on the passed JWT token in the header",
      *   operationId="jwtRefresh",
@@ -266,8 +234,8 @@ class JwtAuthController extends Controller
      * Swagger UI documentation (OA)
      *
      * @OA\Post(
-     *   path="/user/auth/jwt/password/request/reset",
-     *   tags={"User"},
+     *   path="/auth/jwt/password/request/reset",
+     *   tags={"Auth"},
      *   summary="Request reset password",
      *   description="Send OTP code to user email",
      *   operationId="jwtPasswordRequestReset",
@@ -387,8 +355,8 @@ class JwtAuthController extends Controller
      * Swagger UI documentation (OA)
      *
      * @OA\Post(
-     *   path="/user/auth/jwt/password/otp/verify",
-     *   tags={"User"},
+     *   path="/auth/jwt/password/otp/verify",
+     *   tags={"Auth"},
      *   summary="Verify OTP code",
      *   description="SVerify OTP code and return temporary verification code",
      *   operationId="jwtVerifyOTP",
@@ -513,8 +481,8 @@ class JwtAuthController extends Controller
      * Swagger UI documentation (OA)
      *
      * @OA\Post(
-     *   path="/user/auth/jwt/password/reset",
-     *   tags={"User"},
+     *   path="/auth/jwt/password/reset",
+     *   tags={"Auth"},
      *   summary="Reset user password",
      *   description="Reset user password",
      *   operationId="jwtVerifyOTP",
