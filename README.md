@@ -51,7 +51,9 @@ DB_USERNAME={ Your DB user name }
 DB_PASSWORD={ Your DB password }
 <br/>
 <br/>
-**Supporting API key** _(Recommended for mobile applications and private APIs)_:
+
+**Supporting API key**  _(Recommended for mobile applications and private APIs)_ :
+
 <br/>
 <br/>
 If you are developing an API for a mobile application or your API is private your API client should 
