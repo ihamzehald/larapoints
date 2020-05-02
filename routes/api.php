@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
  */
 
 Route::group([
-    'prefix' => 'user/auth/jwt/'
+    'prefix' => '/auth/jwt/'
 ], function ($router) {
     Route::post('logout', 'Auth\JWT\JwtAuthController@logout');
     Route::post('refresh', 'Auth\JWT\JwtAuthController@refresh');
@@ -36,7 +36,7 @@ Route::group([
 Route::group([
     'prefix' => 'user/'
 ], function ($router) {
-    Route::get('me', 'Auth\JWT\JwtAuthController@me');
+    Route::get('me', 'API\UserController@me');
 });
 
 
