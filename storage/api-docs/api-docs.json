@@ -19,10 +19,40 @@
         }
     ],
     "paths": {
-        "/user/auth/jwt/login": {
-            "post": {
+        "/user/me": {
+            "get": {
                 "tags": [
                     "User"
+                ],
+                "summary": "Get the authenticated User",
+                "description": "Get the authenticated User",
+                "operationId": "UserMe",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerJWTAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/jwt/login": {
+            "post": {
+                "tags": [
+                    "Auth"
                 ],
                 "summary": "JWT login",
                 "description": "Login a user and generate JWT token",
@@ -86,40 +116,10 @@
                 }
             }
         },
-        "/user/me": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get the authenticated User",
-                "description": "Get the authenticated User",
-                "operationId": "jwtMe",
-                "responses": {
-                    "200": {
-                        "description": "ok",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerJWTAuth": []
-                    }
-                ]
-            }
-        },
-        "/user/auth/jwt/logout": {
+        "/auth/jwt/logout": {
             "post": {
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Log the user out",
                 "description": "Log the user out (Invalidate the token)",
@@ -152,10 +152,10 @@
                 ]
             }
         },
-        "/user/auth/jwt/refresh": {
+        "/auth/jwt/refresh": {
             "post": {
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Refresh a JWT token",
                 "description": "Referesh a JWT token based on the passed JWT token in the header",
@@ -202,10 +202,10 @@
                 ]
             }
         },
-        "/user/auth/jwt/password/request/reset": {
+        "/auth/jwt/password/request/reset": {
             "post": {
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Request reset password",
                 "description": "Send OTP code to user email",
@@ -258,10 +258,10 @@
                 }
             }
         },
-        "/user/auth/jwt/password/otp/verify": {
+        "/auth/jwt/password/otp/verify": {
             "post": {
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Verify OTP code",
                 "description": "SVerify OTP code and return temporary verification code",
@@ -322,10 +322,10 @@
                 }
             }
         },
-        "/user/auth/jwt/password/reset": {
+        "/auth/jwt/password/reset": {
             "post": {
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Reset user password",
                 "description": "Reset user password",
