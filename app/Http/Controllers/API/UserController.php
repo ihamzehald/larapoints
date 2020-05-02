@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\API;
 
-use \App\Http\Controllers\Controller;
+use \App\Http\Controllers\API\APIController;
 
-class UserController extends Controller{
+class UserController extends APIController{
 
     /**
      * Create a new UserController instance.
@@ -12,6 +12,7 @@ class UserController extends Controller{
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware("auth:api_jwt");
     }
 
