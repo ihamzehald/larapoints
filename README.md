@@ -61,7 +61,7 @@ Apply the database migrations:
 $ php artisan migrate
 ```
 
-Configure your MailGun integration by changing the values of the following vaeiables:
+Configure your MailGun integration by changing the values of the following variables:
 <br/>
 <br/>
 MAIL_USERNAME={ Your MailGun username}
@@ -137,15 +137,22 @@ Add the virtual host server name to the hosts file (/etc/hosts):
 
 # Available endpoints
 
-User:
+**Auth:**
 
-- /user/auth/jwt/login
+- /auth/jwt/login
+- /auth/jwt/logout
+- /auth/jwt/refresh
+- /auth/jwt/password/request/reset
+- /auth/jwt/password/otp/verify
+- /auth/jwt/password/reset
+
+<br/>
+
+**User:**
+
 - /user/me
-- /user/auth/jwt/logout
-- /user/auth/jwt/refresh
-- /user/auth/jwt/password/request/reset
-- /user/auth/jwt/password/otp/verify
-- /user/auth/jwt/password/reset
+
+
 
 
 # API Documentation
