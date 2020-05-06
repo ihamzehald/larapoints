@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\API;
 
 use \App\Http\Controllers\API\APIController;
+use App\Http\Helpers\Constants;
 
 class UserController extends APIController{
 
@@ -47,7 +48,10 @@ class UserController extends APIController{
      */
     public function me()
     {
-        return response()->json(auth("api_jwt")->user());
+        $message = "User profile returned successfully";
+        $data = auth("api_jwt")->user();
+
+        return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);
     }
 
 }

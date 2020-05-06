@@ -14,16 +14,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
-use App\Http\Helpers\Validators;
-use App\Http\Helpers\Generators;
 use App\Http\Helpers\Constants;
-use Illuminate\Support\Facades\Validator;
 use \App\Http\Controllers\API\APIController;
+
 class JwtAuthController extends APIController
 {
-
-    use Validators;
-    use Generators;
 
     /**
      * Create a new AuthController instance.
@@ -118,10 +113,20 @@ class JwtAuthController extends APIController
         $credentials = request(['email', 'password']);
 
         if (! $token = auth("api_jwt")->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+
+            $errors = [
+                "wrong_credentials" => "The provided credentials don't match our records"
+            ];
+
+            return $this->sendResponse(Constants::HTTP_UNAUTHORIZED,
+                "Wrong credentials",
+                null,
+                $errors);
         }
 
-        return $this->respondWithToken($token);
+        return $this->sendResponse(Constants::HTTP_SUCCESS,
+            "User logged in successfully",
+            $this->generateAccessTokenDetails($token));
     }
 
 
@@ -164,8 +169,8 @@ class JwtAuthController extends APIController
     public function logout()
     {
         auth("api_jwt")->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        $message = "User logged out successfully";
+        return $this->sendResponse(Constants::HTTP_SUCCESS, $message, null);
     }
 
     /**
@@ -222,7 +227,11 @@ class JwtAuthController extends APIController
 
     public function refresh()
     {
-        return $this->respondWithToken(auth("api_jwt")->refresh());
+        $newToken = auth("api_jwt")->refresh();
+        $data = $this->generateAccessTokenDetails($newToken);
+        $message = "JWT token refresh successfully";
+
+        return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);
     }
 
     /**
@@ -326,21 +335,19 @@ class JwtAuthController extends APIController
                         Mail::to($user)->send(new SendResetPasswordOTPMail($user, $resetPasswordOtpModel));
 
                         if(empty(Mail::failures())){
-                            return response()->json([
-                                "data"=>[],
-                                "message" => "OTP email sent successfully."
-                            ], Constants::HTTP_SUCCESS);
+
+                            $message = "OTP email sent successfully";
+
+                            return $this->sendResponse(Constants::HTTP_SUCCESS, $message);
                         }
                     }
                 }
             }
         }
 
-        return response()->json([
-            "data"=>[],
-            "message" => "Oops, something went went wrong while trying to send your OTP."
-        ],
-            Constants::HTTP_ERROR);
+        $message = "Oops, something went wrong while trying to send your OTP";
+
+        return $this->sendResponse(Constants::HTTP_ERROR, $message);
 
     }
 
@@ -444,33 +451,29 @@ class JwtAuthController extends APIController
                         if($resetPasswordOTPVerificationModel->save()){
                             $resetPasswordOTPModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
                             if($resetPasswordOTPModel->save()){
-                                return response()->json([
-                                    "data" => [
-                                        "verification_token" => $uniqueOTPVerificationToken
-                                    ],
-                                    "message" => "OTP verified successfully"
-                                ], Constants::HTTP_SUCCESS);
+
+                                $message = "OTP verified successfully";
+                                $data = [
+                                    "verification_token" => $uniqueOTPVerificationToken
+                                ];
+
+                                return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);
+
                             }
                         }
                     }
                 }
             }else{
-                return response()->json([
-                    "data" => [],
-                    "message" => "This OTP expired."
-                ], Constants::HTTP_ERROR);
+                $message = "This OTP expired";
+                return $this->sendResponse(Constants::HTTP_ERROR, $message);
             }
         }else{
-            return response()->json([
-                "data" => [],
-                "message" => "This OTP not valid."
-            ], Constants::HTTP_ERROR);
+            $message = "This OTP not valid";
+            return $this->sendResponse(Constants::HTTP_ERROR, $message);
         }
 
-            return response()->json([
-                "data" => [],
-                "message" => "Oops, something went wrong."
-            ], Constants::HTTP_ERROR);
+        $message = "Oops, something went wrong";
+        return $this->sendResponse(Constants::HTTP_ERROR, $message);
 
     }
 
@@ -565,40 +568,19 @@ class JwtAuthController extends APIController
                     if($user->save()){
                         $resetPasswordOTPVerificationModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
                         if($resetPasswordOTPVerificationModel->save()){
-                            return response()->json([
-                                "data" => [],
-                                "message" => "Password reset successfully."
-                            ], Constants::HTTP_SUCCESS);
+
+                            $message = "Password reset successfully";
+                            return $this->sendResponse(Constants::HTTP_SUCCESS, $message);
+
                         }
                     }
                 }
             }
         }
 
-        return response()->json([
-            "data" => [],
-            "message" => "Something went wrong while trying to reset your password."
-        ], Constants::HTTP_ERROR);
+        $message = "Something went wrong while trying to reset your password";
+        return $this->sendResponse(Constants::HTTP_ERROR, $message);
 
-    }
-
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     * TODO: move this to helpers
-     */
-    protected function respondWithToken($token)
-    {
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth("api_jwt")->factory()->getTTL() * 60
-        ]);
     }
 
 }
