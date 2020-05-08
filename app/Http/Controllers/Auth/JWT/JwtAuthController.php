@@ -41,7 +41,8 @@ class JwtAuthController extends APIController
 
     /**
      * Get a JWT via given credentials.
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @return mixed
      *
      * Swagger UI documentation (OA)
      *
@@ -79,32 +80,91 @@ class JwtAuthController extends APIController
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="access_token",
+     *                    @OA\Property(
+     *                         property="message",
      *                         type="string",
-     *                         description="JWT access token"
+     *                         description="Response message",
      *                     ),
-     *                     @OA\Property(
-     *                         property="token_type",
-     *                         type="string",
-     *                         description="Token type"
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                         description="Response data",
+     *                          @OA\Property(
+     *                              property="access_token",
+     *                              type="string",
+     *                              description="JWT access token",
+     *                              ),
+     *                          @OA\Property(
+     *                              property="token_type",
+     *                              type="string",
+     *                              description="Token type"
+     *                              ),
+     *                          @OA\Property(
+     *                              property="expires_in",
+     *                              type="integer",
+     *                              description="Token expiration in miliseconds",
+     *                              ),
      *                     ),
-     *                     @OA\Property(
-     *                         property="expires_in",
-     *                         type="integer",
-     *                         description="Token expiration in miliseconds",
-     *                         @OA\Items
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
      *                     ),
      *                     example={
-     *                         "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-     *                         "token_type": "bearer",
-     *                         "expires_in": 3600
+     *                         "message": "User logged in successfully",
+     *                         "data": {
+     *                                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+     *                                      "token_type": "bearer",
+     *                                      "expires_in": 3600
+     *                                  },
+     *                         "errors": null
      *                     }
      *                 )
      *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="wrong_credentials",
+     *                              type="string",
+     *                              description="Wrong credentials error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Wrong credentials",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "wrong_credentials": "The provided credentials don't match our records"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
+     *         {"bearerJWTAuth": {}}
+     *     }
      * )
      */
 
@@ -112,7 +172,7 @@ class JwtAuthController extends APIController
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth("api_jwt")->attempt($credentials)) {
+        if (!$token = auth("api_jwt")->attempt($credentials)) {
 
             $errors = [
                 "wrong_credentials" => "The provided credentials don't match our records"
@@ -130,11 +190,10 @@ class JwtAuthController extends APIController
     }
 
 
-
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     *  @return mixed
      *
      * Swagger UI documentation (OA)
      *
@@ -151,21 +210,75 @@ class JwtAuthController extends APIController
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema(
-     *                        @OA\Property(
+     *                    @OA\Property(
      *                         property="message",
      *                         type="string",
-     *                         description="Successfully logged out",
+     *                         description="Response message",
      *                     ),
-     *                      )
-     *              )
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
+     *                     ),
+     *                 example={
+     *                         "message": "User logged out successfully",
+     *                         "data": null,
+     *                         "errors": null
+     *                     }
+     *                 )
+     *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
-     *  security={
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="unauthorized",
+     *                              type="string",
+     *                              description="Unauthorized error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Unauthorized",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "unauthorized": "Unauthorized request"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
      *         {"bearerJWTAuth": {}}
      *     }
      * )
      */
+
     public function logout()
     {
         auth("api_jwt")->logout();
@@ -175,7 +288,8 @@ class JwtAuthController extends APIController
 
     /**
      * Refresh a token.
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @return mixed
      *
      * Swagger UI documentation (OA)
      *
@@ -192,36 +306,91 @@ class JwtAuthController extends APIController
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="access_token",
+     *                    @OA\Property(
+     *                         property="message",
      *                         type="string",
-     *                         description="JWT access token"
+     *                         description="Response message",
      *                     ),
-     *                     @OA\Property(
-     *                         property="token_type",
-     *                         type="string",
-     *                         description="Token type"
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                         description="Response data",
+     *                          @OA\Property(
+     *                              property="access_token",
+     *                              type="string",
+     *                              description="JWT access token",
+     *                              ),
+     *                          @OA\Property(
+     *                              property="token_type",
+     *                              type="string",
+     *                              description="Token type"
+     *                              ),
+     *                          @OA\Property(
+     *                              property="expires_in",
+     *                              type="integer",
+     *                              description="Token expiration in miliseconds",
+     *                              ),
      *                     ),
-     *                     @OA\Property(
-     *                         property="expires_in",
-     *                         type="integer",
-     *                         description="Token expiration in miliseconds",
-     *                         @OA\Items
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
      *                     ),
      *                     example={
-     *                         "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-     *                         "token_type": "bearer",
-     *                         "expires_in": 3600
+     *                         "message": "JWT token refresh successfully",
+     *                         "data": {
+     *                                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+     *                                      "token_type": "bearer",
+     *                                      "expires_in": 3600
+     *                                  },
+     *                         "errors": null
      *                     }
      *                 )
      *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
-     *   security={
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="unauthorized",
+     *                              type="string",
+     *                              description="Unauthorized error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Unauthorized",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "unauthorized": "Unauthorized request"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
      *         {"bearerJWTAuth": {}}
      *     }
-     *
      * )
      */
 
@@ -236,10 +405,9 @@ class JwtAuthController extends APIController
 
     /**
      * Send OTP code to a user email
-     * @param Request $request
-     * @return mixed|\Symfony\Component\HttpFoundation\ParameterBag
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return mixed as API response
      *
      * Swagger UI documentation (OA)
      *
@@ -271,25 +439,72 @@ class JwtAuthController extends APIController
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="data",
-     *                         type="array",
-     *                         @OA\Items(
-     *                           type="array",
-     *                         @OA\Items()
-     *                         ),
-     *                         description="data wraper"
-     *                     ),
-     *                     @OA\Property(
+     *                    @OA\Property(
      *                         property="message",
      *                         type="string",
-     *                         description="Response nessage"
-     *                     )
+     *                         description="Response message",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
+     *                     ),
+     *                     example={
+     *                         "message": "OTP email sent successfully",
+     *                         "data": null,
+     *                         "errors": null
+     *                     }
      *                 )
      *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="unauthorized",
+     *                              type="string",
+     *                              description="Unauthorized error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Unauthorized",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "unauthorized": "Unauthorized request"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
+     *         {"bearerJWTAuth": {}}
+     *     }
      * )
      */
 
@@ -309,7 +524,7 @@ class JwtAuthController extends APIController
 
             ResetPasswordOTP::where('user_id', $user->id)
                 ->update(["status" => Constants::RESET_PASSWORD_OTP_EXPIRED]);
-            
+
             // TODO: move this logic to generateOTP
 
             while (!$isUniqueToken) {
@@ -334,7 +549,7 @@ class JwtAuthController extends APIController
                         $isUniqueToken = true;
                         Mail::to($user)->send(new SendResetPasswordOTPMail($user, $resetPasswordOtpModel));
 
-                        if(empty(Mail::failures())){
+                        if (empty(Mail::failures())) {
 
                             $message = "OTP email sent successfully";
 
@@ -351,14 +566,17 @@ class JwtAuthController extends APIController
 
     }
 
+
     /**
      * Verify OTP code and return temporary verification code
-     * @param $otp
+     *
+     * @param $request
+     *
      * Verification steps:
      * 1- check if the OTP exists.
      * 2- check if the OTP not expired based on the OTP_LIFETIME const
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return mixed
      *
      * Swagger UI documentation (OA)
      *
@@ -366,7 +584,7 @@ class JwtAuthController extends APIController
      *   path="/auth/jwt/password/otp/verify",
      *   tags={"Auth"},
      *   summary="Verify OTP code",
-     *   description="SVerify OTP code and return temporary verification code",
+     *   description="Verify OTP code and return temporary verification code",
      *   operationId="jwtVerifyOTP",
      *   @OA\RequestBody(
      *       required=true,
@@ -390,67 +608,115 @@ class JwtAuthController extends APIController
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="data",
-     *                         type="array",
-     *                         @OA\Items(
-     *                           type="array",
-     *                         @OA\Items(
-     *                          @OA\Property(
-     *                              property="verification_token",
-     *                              type="string",
-     *                              description="OTP verification token to be used on reset password"
-     *                              )
-     *                          )
-     *                         ),
-     *                         description="data wraper"
-     *                     ),
-     *                     @OA\Property(
+     *                    @OA\Property(
      *                         property="message",
      *                         type="string",
-     *                         description="Response nessage"
-     *                     )
+     *                         description="Response message",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                         description="response data",
+     *                         @OA\Property(
+     *                              property="verification_token",
+     *                              type="string",
+     *                              description="Reset password verification token",
+     *                          ),
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
+     *                     ),
+     *                     example={
+     *                         "message": "OTP verified successfully",
+     *                         "data": {
+     *                                      "verification_token": "WuKr7Rmrka5jNYu9y6..."
+     *                                  },
+     *                         "errors": null
+     *                     }
      *                 )
      *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="unauthorized",
+     *                              type="string",
+     *                              description="Unauthorized error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Unauthorized",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "unauthorized": "Unauthorized request"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
+     *         {"bearerJWTAuth": {}}
+     *     }
      * )
      */
-
-    public function verifyOTP(Request $request){
+    public function verifyOTP(Request $request)
+    {
 
         $request->validate(['otp' => 'required']);
 
         $otp = $request->get("otp", null);
 
         $resetPasswordOTPModel = ResetPasswordOTP::where("otp", $otp)
-                ->where("status", Constants::RESET_PASSWORD_OTP_CREATED)
-                ->first();
+            ->where("status", Constants::RESET_PASSWORD_OTP_CREATED)
+            ->first();
 
-        if($resetPasswordOTPModel){
-            if($this->isOTPValid($resetPasswordOTPModel, Constants::OTP_LIFETIME)){
+        if ($resetPasswordOTPModel) {
+            if ($this->isOTPValid($resetPasswordOTPModel, Constants::OTP_LIFETIME)) {
                 // generate otp tmp verification token
 
                 $isUniqueToken = false;
 
                 // TODO: move this logic to generateOTPVerificationToken
 
-                while(!$isUniqueToken){
+                while (!$isUniqueToken) {
                     $uniqueOTPVerificationToken = $this->generateOTPVerificationToken();
                     $resetPasswordOTPVerification = ResetPasswordOTPVerification::where('token', $uniqueOTPVerificationToken)
                         ->exists();
 
-                    if(!$resetPasswordOTPVerification){
+                    if (!$resetPasswordOTPVerification) {
                         $resetPasswordOTPVerificationModel = new ResetPasswordOTPVerification;
                         $resetPasswordOTPVerificationModel->user_id = $resetPasswordOTPModel->user_id;
                         $resetPasswordOTPVerificationModel->otp_id = $resetPasswordOTPModel->id;
                         $resetPasswordOTPVerificationModel->token = $uniqueOTPVerificationToken;
                         $resetPasswordOTPVerificationModel->status = Constants::RESET_PASSWORD_OTP_VERIFICATION_CREATED;
 
-                        if($resetPasswordOTPVerificationModel->save()){
+                        if ($resetPasswordOTPVerificationModel->save()) {
                             $resetPasswordOTPModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
-                            if($resetPasswordOTPModel->save()){
+                            if ($resetPasswordOTPModel->save()) {
 
                                 $message = "OTP verified successfully";
                                 $data = [
@@ -463,11 +729,11 @@ class JwtAuthController extends APIController
                         }
                     }
                 }
-            }else{
+            } else {
                 $message = "This OTP expired";
                 return $this->sendResponse(Constants::HTTP_ERROR, $message);
             }
-        }else{
+        } else {
             $message = "This OTP not valid";
             return $this->sendResponse(Constants::HTTP_ERROR, $message);
         }
@@ -477,10 +743,11 @@ class JwtAuthController extends APIController
 
     }
 
+
     /**
      * Reset user password
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return mixed
      *
      * Swagger UI documentation (OA)
      *
@@ -489,7 +756,7 @@ class JwtAuthController extends APIController
      *   tags={"Auth"},
      *   summary="Reset user password",
      *   description="Reset user password",
-     *   operationId="jwtVerifyOTP",
+     *   operationId="jwtPasswordReset",
      *   @OA\RequestBody(
      *       required=true,
      *       @OA\MediaType(
@@ -498,7 +765,7 @@ class JwtAuthController extends APIController
      *               type="object",
      *               @OA\Property(
      *                   property="verification_token",
-     *                   description="verification token from (/user/auth/jwt/password/otp/verify) end point",
+     *                   description="verification token from (/auth/jwt/password/otp/verify) end point",
      *                   type="string",
      *                   example="SEJJJvD8YbpfXDljgMI3RAXySokNXIRmPT7yB7H2NZcnNSHTJgWUVJyAaExGvDPo"
      *               ),
@@ -524,50 +791,98 @@ class JwtAuthController extends APIController
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="data",
-     *                         type="array",
-     *                         @OA\Items(
-     *                           type="array",
-     *                         @OA\Items(
-     *                          )
-     *                         ),
-     *                         description="data wraper"
-     *                     ),
-     *                     @OA\Property(
+     *                    @OA\Property(
      *                         property="message",
      *                         type="string",
-     *                         description="Response nessage"
-     *                     )
+     *                         description="Response message",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
+     *                     ),
+     *                     example={
+     *                         "message": "Password reset successfully",
+     *                         "data": null,
+     *                         "errors": null
+     *                     }
      *                 )
      *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="unauthorized",
+     *                              type="string",
+     *                              description="Unauthorized error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Unauthorized",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "unauthorized": "Unauthorized request"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
+     *         {"bearerJWTAuth": {}}
+     *     }
      * )
      */
-    public function resetPassword(Request $request){
+
+    public function resetPassword(Request $request)
+    {
         $request->validate([
             'verification_token' => 'required',
             'password' => 'required|confirmed|min:8',
         ]);
 
-        $verificationToken =  $request->get("verification_token", null);
+        $verificationToken = $request->get("verification_token", null);
         $password = $request->get("password", null);
 
         $resetPasswordOTPVerificationModel = ResetPasswordOTPVerification::where("token", $verificationToken)
             ->where("status", Constants::RESET_PASSWORD_OTP_CREATED)
             ->first();
 
-        if($resetPasswordOTPVerificationModel){
+        if ($resetPasswordOTPVerificationModel) {
 
-            if($this->isOTPVerificationTokenValid($resetPasswordOTPVerificationModel, Constants::OTP_VERIFICATION_TOKEN_LIFETIME)){
+            if ($this->isOTPVerificationTokenValid($resetPasswordOTPVerificationModel, Constants::OTP_VERIFICATION_TOKEN_LIFETIME)) {
                 $user = User::where('id', $resetPasswordOTPVerificationModel->user_id)->first();
-                if($user){
+                if ($user) {
                     $user->password = Hash::make($password);
-                    if($user->save()){
+                    if ($user->save()) {
                         $resetPasswordOTPVerificationModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
-                        if($resetPasswordOTPVerificationModel->save()){
+                        if ($resetPasswordOTPVerificationModel->save()) {
 
                             $message = "Password reset successfully";
                             return $this->sendResponse(Constants::HTTP_SUCCESS, $message);
