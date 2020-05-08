@@ -109,10 +109,10 @@ Apache2 virtual host:
 Note: this is a sample Apache2 virtual host for local testing, you should always configure your virtual hosts with SSL, but this is out of this documentation scope.
 <br/>
 <br/>
+
 ```shell script
 $ cd /etc/apache2/sites-available
 ```
-
 
 <br/>
 Create the a virtual host config file (larapoints.loc.conf) for example.
