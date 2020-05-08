@@ -18,7 +18,7 @@ class UserController extends APIController{
     }
 
     /**
-     * Refresh a token.
+     * Get a user profile
      *
      * @return mixed
      *
