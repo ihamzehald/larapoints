@@ -2,14 +2,18 @@
 
 namespace App\Exceptions;
 
+use App\Http\Helpers\Constants;
 use Exception;
 use Throwable;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use \App\Http\Helpers\ApiResponse;
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponse;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -64,8 +68,22 @@ class Handler extends ExceptionHandler
         return parent::render($request, $exception);
     }
 
+    /**
+     * Unauthorized/unauthenticated response
+     * @param \Illuminate\Http\Request $request
+     * @param AuthenticationException $exception
+     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     */
+
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        return response()->json(['error' => 'Unauthenticated'], 401);
+        $message = "Unauthorized";
+
+        $errors = [
+            "unauthorized" => "Unauthorized request"
+        ];
+
+        return $this->sendResponse(Constants::HTTP_UNAUTHORIZED, $message, null, $errors);
+
     }
 }

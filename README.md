@@ -202,8 +202,9 @@ LaraPoints integrated with L5-Swagger library to auto generate the documentation
 
 ```shell script
     /**
-     * Get the authenticated User.
-     * @return \Illuminate\Http\JsonResponse
+     * Refresh a token.
+     *
+     * @return mixed
      *
      * Swagger UI documentation (OA)
      *
@@ -212,19 +213,86 @@ LaraPoints integrated with L5-Swagger library to auto generate the documentation
      *   tags={"User"},
      *   summary="Get the authenticated User",
      *   description="Get the authenticated User",
-     *   operationId="jwtMe",
+     *   operationId="UserMe",
      *  @OA\Response(
      *         response="200",
      *         description="ok",
      *         content={
      *             @OA\MediaType(
      *                 mediaType="application/json",
-     *                 @OA\Schema(ref="#/components/schemas/User")
-     *              )
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                         description="Response data",
+     *                         ref="#/components/schemas/User"
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
+     *                     ),
+     *                     example={
+     *                         "message": "JWT token refresh successfully",
+     *                         "data": {
+     *                                      "id": 1,
+     *                                      "name": "Hamza al darawsheh",
+     *                                      "email": "ihamzehald@gmail.com",
+     *                                      "email_verified_at": null,
+     *                                      "created_at": "2020-03-20T09:10:32.000000Z",
+     *                                      "updated_at": "2020-05-08T20:39:06.000000Z"
+     *                                  },
+     *                         "errors": null
+     *                     }
+     *                 )
+     *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
-     *  security={
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="unauthorized",
+     *                              type="string",
+     *                              description="Unauthorized error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Unauthorized",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "unauthorized": "Unauthorized request"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
      *         {"bearerJWTAuth": {}}
      *     }
      * )
@@ -237,13 +305,14 @@ LaraPoints integrated with L5-Swagger library to auto generate the documentation
 ```shell script
     /**
      * Get a JWT via given credentials.
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @return mixed
      *
      * Swagger UI documentation (OA)
      *
      * @OA\Post(
-     *   path="/user/auth/jwt/login",
-     *   tags={"User"},
+     *   path="/auth/jwt/login",
+     *   tags={"Auth"},
      *   summary="JWT login",
      *   description="Login a user and generate JWT token",
      *   operationId="jwtLogin",
@@ -275,37 +344,142 @@ LaraPoints integrated with L5-Swagger library to auto generate the documentation
      *             @OA\MediaType(
      *                 mediaType="application/json",
      *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="access_token",
+     *                    @OA\Property(
+     *                         property="message",
      *                         type="string",
-     *                         description="JWT access token"
+     *                         description="Response message",
      *                     ),
-     *                     @OA\Property(
-     *                         property="token_type",
-     *                         type="string",
-     *                         description="Token type"
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                         description="Response data",
+     *                          @OA\Property(
+     *                              property="access_token",
+     *                              type="string",
+     *                              description="JWT access token",
+     *                              ),
+     *                          @OA\Property(
+     *                              property="token_type",
+     *                              type="string",
+     *                              description="Token type"
+     *                              ),
+     *                          @OA\Property(
+     *                              property="expires_in",
+     *                              type="integer",
+     *                              description="Token expiration in miliseconds",
+     *                              ),
      *                     ),
-     *                     @OA\Property(
-     *                         property="expires_in",
-     *                         type="integer",
-     *                         description="Token expiration in miliseconds",
-     *                         @OA\Items
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
      *                     ),
      *                     example={
-     *                         "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-     *                         "token_type": "bearer",
-     *                         "expires_in": 3600
+     *                         "message": "User logged in successfully",
+     *                         "data": {
+     *                                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+     *                                      "token_type": "bearer",
+     *                                      "expires_in": 3600
+     *                                  },
+     *                         "errors": null
      *                     }
      *                 )
      *             )
      *         }
      *     ),
-     *   @OA\Response(response="401",description="Unauthorized"),
+     *    @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="null",
+     *                         description="Response data",
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="object",
+     *                         description="response errors",
+     *                         @OA\Property(
+     *                              property="wrong_credentials",
+     *                              type="string",
+     *                              description="Wrong credentials error message",
+     *                          ),
+     *                     ),
+     *                     example={
+     *                         "message": "Wrong credentials",
+     *                         "data": null,
+     *                         "errors": {
+     *                                      "wrong_credentials": "The provided credentials don't match our records"
+     *                                  }
+     *
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
+     *         {"bearerJWTAuth": {}}
+     *     }
      * )
      */
 ```
 
+
+**Model example:**
+<br/>
+
+```shell script
+/**
+ * @OA\Schema(@OA\Xml(name="User"))
+ * 
+ * @OA\Property(
+ *   property="id",
+ *   type="string",
+ *   description="User ID"
+ * )
+ *
+ * @OA\Property(
+ *   property="name",
+ *   type="string",
+ *   description="User name"
+ * )
+ * 
+ * @OA\Property(
+ *   property="email",
+ *   type="string",
+ *   description="User email"
+ * )
+ * 
+ * @OA\Property(
+ *   property="email_verified_at",
+ *   type="string",
+ *   description="Email verified at"
+ * )
+ * 
+ * @OA\Property(
+ *   property="created_at",
+ *   type="string",
+ *   description="Created at"
+ * )
+ * 
+ * @OA\Property(
+ *   property="updated_at",
+ *   type="string",
+ *   description="Updated at"
+ * )
+ * 
+ */
+```
 **To generate the API documentation apply the following command:**
 ```shell script
 $ php artisan l5-swagger:generate
-````
+```
