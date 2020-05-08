@@ -22,4 +22,17 @@ trait Generators{
         return Str::random($length);
     }
 
+
+    /**
+     * @param $token
+     * @return array
+     */
+    public function generateAccessTokenDetails($token){
+       return  [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth("api_jwt")->factory()->getTTL() * env('JWT_TTL', 60)
+        ];
+    }
+
 }
