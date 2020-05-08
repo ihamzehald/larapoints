@@ -106,7 +106,9 @@ Change the value of JWT_SECRET to a private JWT secret key.
 Apache2 virtual host:
 <br/>
 <br>
-
+Note: this is a sample Apache2 virtual host for local testing, you should always configure your virtual hosts with SSL, but this is out of this documentation scope.
+<br/>
+<br/>
 ```shell script
 $ cd /etc/apache2/sites-available
 ```
@@ -119,6 +121,7 @@ Create the a virtual host config file (larapoints.loc.conf) for example.
 **larapoints.loc.conf** sample:
 <br/>
 <br/>
+
 
 ```shell script
 
