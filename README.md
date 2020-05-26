@@ -109,10 +109,10 @@ Apache2 virtual host:
 Note: this is a sample Apache2 virtual host for local testing, you should always configure your virtual hosts with SSL, but this is out of this documentation scope.
 <br/>
 <br/>
+
 ```shell script
 $ cd /etc/apache2/sites-available
 ```
-
 
 <br/>
 Create the a virtual host config file (larapoints.loc.conf) for example.
@@ -182,9 +182,59 @@ Add the virtual host server name to the hosts file (/etc/hosts):
 - /user/me
 
 
+# API versioning
 
+There is a lot of methods to support versioning in your API, LaraPoints use URI versioning and directory structure and OOP inheritance to support backward compatibility and DRY principle when it is possible.
 
+<br/>
+
+- Directory structure and namespaces:
+<br/>
+<br/>
+To support versioning the application main controllers places in a directory with the same verizon name (v1 for example) to handle v1 API implementation under the following path (app/Http/Controllers/API/V1), if you want to implement V2 of your API for example you create V2 folder in (app/Http/Controllers/API) directory path and make your implementation there.
+<br/>
+<br/>
+All namespaces of your controllers should have a namespace related to the directory version of your API.
+<br/>
+<br/>
+Example : namespace App\Http\Controllers\API\V1;
+<br/>
+<br/>
+
+- Routing:
+<br/>
+<br/>
+To support URI versioning LaraPoints use the following methodology :  
+<br/>
+1- In routes folder there is a new folder created (api) and inside this folder the routes distributed based on the API version in a file for each version, v1.php for version one for example.
+<br/>
+<br/>
+2- RouteServiceProvider.php file modified to load the routes on the previous step and inject the appropriate namespace for each version.
+
+- V2 implementation:
+<br/>
+<br/>
+When you face breaking changes, you will have to release a new version of your API, LaraPoints already contains a suggested implementation of V2, this implementation placed under (app/Http/Controllers/API/V2), this implementation supporting backward compatibility and applying DRY principle when it is applicable, you can use the same methodology or use your own way that fits your application needs better.
+<br/>
+<br/>
 # API Documentation
+
+- <b> Postman </b> :
+
+When it comes to an API documentation it is recommended to use Postman, it is highly powerful and flexible tool and easy to implement and one of the best tools to test your API.
+
+<br/>
+
+LaraPoints has available Postman implementation ready to use here :
+
+<be/>
+
+https://documenter.getpostman.com/view/3215735/SzRxXWdP?version=latest
+
+
+- <b> Swagger UI </b>:
+
+LaraPoints supports Swagger UI using OpenApi tags as the following:
 - API documentation path:
 <br/>
 http://larapoints.loc/api/documentation

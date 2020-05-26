@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\V1;
 
 use \App\Http\Controllers\Controller;
 use \Illuminate\Http\Request;
@@ -21,16 +21,12 @@ use App\Http\Helpers\Validators;
  * Swagger UI documentation (OA)
  *
  * @OA\Info(
- *      version="0.7.0",
+ *      version="1.0.0",
  *      title="LaraPoints",
  *      description="LaraPoints REST API skeleton documentation",
  *      @OA\Contact(
  *          email="ihamzehald@gmail.com"
- *      ),
- *     @OA\License(
- *         name="Apache 2.0",
- *         url="http://www.apache.org/licenses/LICENSE-2.0.html"
- *     )
+ *      )
  * )
  *
  * @OA\Server(

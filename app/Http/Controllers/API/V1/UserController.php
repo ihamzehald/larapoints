@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\V1;
 
-use \App\Http\Controllers\API\APIController;
+use \App\Http\Controllers\API\V1\APIController;
 use App\Http\Helpers\Constants;
 
 class UserController extends APIController{

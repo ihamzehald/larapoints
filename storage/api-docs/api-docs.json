@@ -6,110 +6,15 @@
         "contact": {
             "email": "ihamzehald@gmail.com"
         },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "0.7.0"
+        "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "http://larapoints.loc/api",
+            "url": "http://larapoints.loc/api/v1",
             "description": "LaraPoints host"
         }
     ],
     "paths": {
-        "/user/me": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get the authenticated User",
-                "description": "Get the authenticated User",
-                "operationId": "UserMe",
-                "responses": {
-                    "200": {
-                        "description": "ok",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "description": "Response message",
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "description": "Response data",
-                                            "type": "object",
-                                            "$ref": "#/components/schemas/User"
-                                        },
-                                        "errors": {
-                                            "description": "response errors",
-                                            "type": "null"
-                                        }
-                                    },
-                                    "type": "object",
-                                    "example": {
-                                        "message": "JWT token refresh successfully",
-                                        "data": {
-                                            "id": 1,
-                                            "name": "Hamza al darawsheh",
-                                            "email": "ihamzehald@gmail.com",
-                                            "email_verified_at": null,
-                                            "created_at": "2020-03-20T09:10:32.000000Z",
-                                            "updated_at": "2020-05-08T20:39:06.000000Z"
-                                        },
-                                        "errors": null
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "description": "Response message",
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "description": "Response data",
-                                            "type": "null"
-                                        },
-                                        "errors": {
-                                            "description": "response errors",
-                                            "properties": {
-                                                "unauthorized": {
-                                                    "description": "Unauthorized error message",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object",
-                                    "example": {
-                                        "message": "Unauthorized",
-                                        "data": null,
-                                        "errors": {
-                                            "unauthorized": "Unauthorized request"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerJWTAuth": []
-                    }
-                ]
-            }
-        },
         "/auth/jwt/login": {
             "post": {
                 "tags": [
@@ -734,6 +639,97 @@
                     }
                 ]
             }
+        },
+        "/user/me": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get the authenticated User",
+                "description": "Get the authenticated User",
+                "operationId": "UserMe",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Response message",
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "description": "Response data",
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "errors": {
+                                            "description": "response errors",
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "message": "JWT token refresh successfully",
+                                        "data": {
+                                            "id": 1,
+                                            "name": "Hamza al darawsheh",
+                                            "email": "ihamzehald@gmail.com",
+                                            "email_verified_at": null,
+                                            "created_at": "2020-03-20T09:10:32.000000Z",
+                                            "updated_at": "2020-05-08T20:39:06.000000Z"
+                                        },
+                                        "errors": null
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Response message",
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "description": "Response data",
+                                            "type": "null"
+                                        },
+                                        "errors": {
+                                            "description": "response errors",
+                                            "properties": {
+                                                "unauthorized": {
+                                                    "description": "Unauthorized error message",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "message": "Unauthorized",
+                                        "data": null,
+                                        "errors": {
+                                            "unauthorized": "Unauthorized request"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerJWTAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -786,7 +782,7 @@
                 "flows": {
                     "clientCredentials": {
                         "tokenUrl": "oauth/token",
-                        "scopes": []
+                        "scopes": {}
                     }
                 },
                 "bearerFormat": "JWT",
