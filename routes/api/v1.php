@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API V1 Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
@@ -36,7 +36,7 @@ Route::group([
 Route::group([
     'prefix' => 'user/'
 ], function ($router) {
-    Route::get('me', 'API\UserController@me');
+    Route::get('me', 'UserController@me');
 });
 
 
