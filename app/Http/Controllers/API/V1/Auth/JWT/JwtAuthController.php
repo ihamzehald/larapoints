@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\JWT;
+namespace App\Http\Controllers\API\V1\Auth\JWT;
 
 
 use App\Mail\SendResetPasswordOTPMail;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
 use App\Http\Helpers\Constants;
-use \App\Http\Controllers\API\APIController;
+use \App\Http\Controllers\API\V1\APIController;
 
 class JwtAuthController extends APIController
 {
