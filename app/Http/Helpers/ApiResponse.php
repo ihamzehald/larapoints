@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Helpers;
+
 /**
  * Trait ApiResponse
  * @package App\Http\Helpers
  * All helpers that related to API response
  */
-trait ApiResponse{
+trait ApiResponse
+{
 
     /**
      * Standard method to send API response
@@ -16,12 +18,12 @@ trait ApiResponse{
      * @param null $errors
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendResponse($status, $message, $data = null, $errors = null){
+    public function sendResponse($status, $message, $data = null, $errors = null)
+    {
         return response()->json([
             "message" => $message,
             "data" => $data,
             "errors" => $errors
         ], $status);
     }
-
 }

@@ -21,7 +21,6 @@ class ResetPasswordOtp extends Migration
             $table->integer("status");
 
             $table->timestamps();
-
         });
     }
 

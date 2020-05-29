@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API\V2;
 use \App\Http\Controllers\API\V1\UserController as UserControllerV1;
 use Carbon\Carbon;
 use App\Http\Helpers\Constants;
+
 /**
  * Override the extended UserControllerV1 methods to change their behaviour in v2
  */
 
-class UserController extends UserControllerV1{
+class UserController extends UserControllerV1
+{
 
 
 
@@ -27,8 +29,4 @@ class UserController extends UserControllerV1{
 
         return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);
     }
-
-
-
-
 }
