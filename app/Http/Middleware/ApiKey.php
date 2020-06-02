@@ -21,12 +21,11 @@ class ApiKey
     public function handle($request, Closure $next)
     {
 
-        if(env('ACTIVATE_API_KEY', false)){
-
+        if (env('ACTIVATE_API_KEY', false)) {
             $apiKey = $request->header('x-api-key');
 
-            if($apiKey){
-                if($apiKey === env('API_KEY', false)){
+            if ($apiKey) {
+                if ($apiKey === env('API_KEY', false)) {
                     return $next($request);
                 }
 
@@ -40,10 +39,8 @@ class ApiKey
             $errors = ["api_key" => "x-api-key header is missing"];
 
             return $this->sendResponse(Constants::HTTP_UNAUTHORIZED, $message, null, $errors);
-
         }
 
         return $next($request);
-
     }
 }

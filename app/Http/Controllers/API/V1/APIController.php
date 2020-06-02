@@ -63,6 +63,4 @@ class APIController extends Controller
     {
         $this->middleware("apiKey");
     }
-
-
 }
