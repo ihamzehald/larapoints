@@ -2,7 +2,8 @@
 
 namespace App\Http\Helpers;
 
-Class Constants{
+class Constants
+{
 
     /**
      * OTP statuses
@@ -43,9 +44,4 @@ Class Constants{
     const HTTP_ERROR = 400;
     const HTTP_UNAUTHORIZED = 401;
     const HTTP_FORBIDDEN = 403;
-
-
-
-
-
 }

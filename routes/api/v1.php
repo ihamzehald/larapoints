@@ -38,6 +38,3 @@ Route::group([
 ], function ($router) {
     Route::get('me', 'UserController@me');
 });
-
-
-

@@ -210,13 +210,18 @@ To support URI versioning LaraPoints use the following methodology :
 <br/>
 <br/>
 2- RouteServiceProvider.php file modified to load the routes on the previous step and inject the appropriate namespace for each version.
+<br/>
+<br/>
 
 - V2 implementation:
+
 <br/>
 <br/>
-When you face breaking changes, you will have to release a new version of your API, LaraPoints already contains a suggested implementation of V2, this implementation placed under (app/Http/Controllers/API/V2), this implementation supporting backward compatibility and applying DRY principle when it is applicable, you can use the same methodology or use your own way that fits your application needs better.
+When you face breaking changes, you will have to release a new version of your API, LaraPoints already contains a suggested implementation of V2, this implementation placed under (app/Http/Controllers/API/V2), this implementation supporting backward compatibility and applying DRY principle when it is possible, you can use the same methodology or use your own way that fits your application needs better.
+
 <br/>
 <br/>
+
 # API Documentation
 
 - <b> Postman </b> :

@@ -4,7 +4,8 @@ namespace App\Http\Controllers\API\V1;
 use \App\Http\Controllers\API\V1\APIController;
 use App\Http\Helpers\Constants;
 
-class UserController extends APIController{
+class UserController extends APIController
+{
 
     /**
      * Create a new UserController instance.
@@ -121,5 +122,4 @@ class UserController extends APIController{
 
         return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);
     }
-
 }

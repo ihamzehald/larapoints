@@ -84,6 +84,5 @@ class Handler extends ExceptionHandler
         ];
 
         return $this->sendResponse(Constants::HTTP_UNAUTHORIZED, $message, null, $errors);
-
     }
 }
