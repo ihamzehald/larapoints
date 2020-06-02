@@ -6,22 +6,12 @@ version: 2
 jobs:
   build:
     docker:
-      # Specify the version you desire here
-      - image: circleci/php:7.1-node-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
-      # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      #
-      # - image: redis:2.8.19
+      - image: circleci/php:7.2.8-node-browsers
 
     steps:
       - checkout
 
-      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
+      - run: sudo apt update
       - run: sudo docker-php-ext-install zip
 
       # Download and cache dependencies
@@ -38,21 +28,32 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
           paths:
             - ./vendor
+
       - restore_cache:
           keys:
             - node-v1-{{ checksum "package.json" }}
             - node-v1-
+
       - run: yarn install
+      
       - save_cache:
           key: node-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
 
+      # test php code quality
+      - run: ./vendor/squizlabs/php_codesniffer/bin/phpcs --config-set default_standard PSR2
+      - run: ./vendor/squizlabs/php_codesniffer/bin/phpcs --config-set show_warnings 0
+      - run: ./vendor/squizlabs/php_codesniffer/bin/phpcs --config-set show_progress 1
+      - run: ./vendor/squizlabs/php_codesniffer/bin/phpcs --config-set colors 1
+      - run: ./vendor/squizlabs/php_codesniffer/bin/phpcs --ignore=*vendor/*,*node_modules/*,*/database/*,*tests/*,*storage/*,*cache/*,*.css,*.js .
+
       # prepare the database
-      - run: touch storage/testing.sqlite
-      - run: php artisan migrate --env=testing --database=sqlite_testing --force
+      - run: touch database/larapoints_test.sqlite
+      - run: php artisan migrate --env=testing --database=larapoints_test --force
 
       # run tests with phpunit or codecept
       #- run: ./vendor/bin/phpunit
+      - run: ./vendor/bin/codecept bootstrap
       - run: ./vendor/bin/codecept build
       - run: ./vendor/bin/codecept run
