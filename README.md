@@ -168,6 +168,7 @@ Add the virtual host server name to the hosts file (/etc/hosts):
 
 **Auth:**
 
+- /auth/jwt/register
 - /auth/jwt/login
 - /auth/jwt/logout
 - /auth/jwt/refresh
