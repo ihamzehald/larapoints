@@ -33,10 +33,167 @@ class JwtAuthController extends APIController
                 "login",
                 "sendResetPasswordOTP",
                 "verifyOTP",
-                "resetPassword"
+                "resetPassword",
+                "register"
             ]);
     }
 
+    /**
+     * Register a new user
+     *
+     * @return mixed
+     *
+     * Swagger UI documentation (OA)
+     *
+     * @OA\Post(
+     *   path="/auth/jwt/Register",
+     *   tags={"Auth"},
+     *   summary="JWT Register",
+     *   description="Register a new user",
+     *   operationId="jwtRegister",
+     *   @OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *           mediaType="application/json",
+     *           @OA\Schema(
+     *               type="object",
+     *               @OA\Property(
+     *                   property="email",
+     *                   description="User email",
+     *                   type="string",
+     *                   example="ihamzehald@gmail.com"
+     *               ),
+     *               @OA\Property(
+     *                   property="name",
+     *                   description="User name",
+     *                   type="string",
+     *                   example="Hamza al darawsheh"
+     *               ),
+     *               @OA\Property(
+     *                   property="password",
+     *                   description="User password",
+     *                   type="string",
+     *                   example="larapoints123"
+     *               ),
+     *              @OA\Property(
+     *                   property="password_confirmation",
+     *                   description="User password confirmation",
+     *                   type="string",
+     *                   example="larapoints123"
+     *               ),
+     *           )
+     *       )
+     *   ),
+     *  @OA\Response(
+     *         response="200",
+     *         description="ok",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                    @OA\Property(
+     *                         property="message",
+     *                         type="string",
+     *                         description="Response message",
+     *                     ),
+     *                    @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                         description="Response data",
+     *                         @OA\Property(
+     *                              property="id",
+     *                              type="integer",
+     *                              description="User id",
+     *                              ),
+     *                          @OA\Property(
+     *                              property="access_token",
+     *                              type="string",
+     *                              description="JWT access token",
+     *                              ),
+     *                          @OA\Property(
+     *                              property="token_type",
+     *                              type="string",
+     *                              description="Token type"
+     *                              ),
+     *                          @OA\Property(
+     *                              property="expires_in",
+     *                              type="integer",
+     *                              description="Token expiration in miliseconds",
+     *                              ),
+     *                         @OA\Property(
+     *                              property="name",
+     *                              type="string",
+     *                              description="User name"
+     *                              ),
+     *                        @OA\Property(
+     *                              property="email",
+     *                              type="string",
+     *                              description="User email"
+     *                              ),
+     *                       @OA\Property(
+     *                              property="updated_at",
+     *                              type="string",
+     *                              description="User updated at"
+     *                              ),
+     *                       @OA\Property(
+     *                              property="created_at",
+     *                              type="string",
+     *                              description="User created at"
+     *                              )
+     *                     ),
+     *                  @OA\Property(
+     *                         property="errors",
+     *                         type="null",
+     *                         description="response errors",
+     *                     ),
+     *                     example={
+     *                         "message": "User logged in successfully",
+     *                         "data": {
+     *                                   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sYXJhcG9pbnRzLmxvY1wvYXBpXC92MlwvYXV0aFwvand0XC9yZWdpc3RlciIsImlhdCI6MTU5OTUwNDc0NCwiZXhwIjoxNTk5NTA4MzQ0LCJuYmYiOjE1OTk1MDQ3NDQsImp0aSI6Ik4zTW9Mek9xMHFlS2xmdnIiLCJzdWIiOjE3LCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.7oAcjHhMK8kUyQpyXIfpmMC4vk12wJa7PR9KwRYLFMo",
+     *                                    "token_type": "bearer",
+     *                                    "expires_in": 3600,
+     *                                    "name": "Hamzeh test",
+     *                                    "email": "ihamzehald15@gmail.com",
+     *                                    "updated_at": "2020-09-07T18:52:24.000000Z",
+     *                                    "created_at": "2020-09-07T18:52:24.000000Z",
+     *                                    "id": 17
+     *                                    },
+     *                         "errors": null
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     ),
+     *     security={
+     *         {"bearerJWTAuth": {}}
+     *     }
+     * )
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'password' => 'required|confirmed|min:8',
+            'email' => 'required|email|unique:users',
+        ]);
+
+        $userData = request(['name','email', 'password']);
+
+        $newUser =  User::create([
+            'name' => $userData['name'],
+            'email' => $userData['email'],
+            'password' => Hash::make($userData['password']),
+        ]);
+
+        $message = "User registered successfully";
+
+        $token = auth("api_jwt")->attempt($userData);
+        $tokenData = $this->generateAccessTokenDetails($token);
+
+        $response = array_merge($tokenData, $newUser->toArray());
+
+        return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $response);
+    }
 
     /**
      * Get a JWT via given credentials.
