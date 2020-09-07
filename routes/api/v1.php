@@ -21,9 +21,10 @@ use Illuminate\Http\Request;
 Route::group([
     'prefix' => '/auth/jwt/'
 ], function ($router) {
+    Route::post('register', 'Auth\JWT\JwtAuthController@register');
+    Route::post('login', 'Auth\JWT\JwtAuthController@login');
     Route::post('logout', 'Auth\JWT\JwtAuthController@logout');
     Route::post('refresh', 'Auth\JWT\JwtAuthController@refresh');
-    Route::post('login', 'Auth\JWT\JwtAuthController@login');
     Route::post('password/request/reset', 'Auth\JWT\JwtAuthController@sendResetPasswordOTP');
     Route::post('password/otp/verify', 'Auth\JWT\JwtAuthController@verifyOTP');
     Route::post('password/reset', 'Auth\JWT\JwtAuthController@resetPassword');

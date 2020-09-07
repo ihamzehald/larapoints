@@ -15,6 +15,127 @@
         }
     ],
     "paths": {
+        "/auth/jwt/Register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "JWT Register",
+                "description": "Register a new user",
+                "operationId": "jwtRegister",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "User email",
+                                        "type": "string",
+                                        "example": "ihamzehald@gmail.com"
+                                    },
+                                    "name": {
+                                        "description": "User name",
+                                        "type": "string",
+                                        "example": "Hamza al darawsheh"
+                                    },
+                                    "password": {
+                                        "description": "User password",
+                                        "type": "string",
+                                        "example": "larapoints123"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "User password confirmation",
+                                        "type": "string",
+                                        "example": "larapoints123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Response message",
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "description": "Response data",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "User id",
+                                                    "type": "integer"
+                                                },
+                                                "access_token": {
+                                                    "description": "JWT access token",
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "description": "Token type",
+                                                    "type": "string"
+                                                },
+                                                "expires_in": {
+                                                    "description": "Token expiration in miliseconds",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "User name",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "User email",
+                                                    "type": "string"
+                                                },
+                                                "updated_at": {
+                                                    "description": "User updated at",
+                                                    "type": "string"
+                                                },
+                                                "created_at": {
+                                                    "description": "User created at",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "description": "response errors",
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "message": "User logged in successfully",
+                                        "data": {
+                                            "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sYXJhcG9pbnRzLmxvY1wvYXBpXC92MlwvYXV0aFwvand0XC9yZWdpc3RlciIsImlhdCI6MTU5OTUwNDc0NCwiZXhwIjoxNTk5NTA4MzQ0LCJuYmYiOjE1OTk1MDQ3NDQsImp0aSI6Ik4zTW9Mek9xMHFlS2xmdnIiLCJzdWIiOjE3LCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.7oAcjHhMK8kUyQpyXIfpmMC4vk12wJa7PR9KwRYLFMo",
+                                            "token_type": "bearer",
+                                            "expires_in": 3600,
+                                            "name": "Hamzeh test",
+                                            "email": "ihamzehald15@gmail.com",
+                                            "updated_at": "2020-09-07T18:52:24.000000Z",
+                                            "created_at": "2020-09-07T18:52:24.000000Z",
+                                            "id": 17
+                                        },
+                                        "errors": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerJWTAuth": []
+                    }
+                ]
+            }
+        },
         "/auth/jwt/login": {
             "post": {
                 "tags": [
