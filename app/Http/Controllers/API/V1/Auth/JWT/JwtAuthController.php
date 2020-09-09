@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1\Auth\JWT;
 
+use App\Http\Helpers\Generators;
 use App\Mail\SendResetPasswordOTPMail;
 use App\Models\ResetPasswordOTP;
 use App\Models\ResetPasswordOTPVerification;
@@ -175,6 +176,7 @@ class JwtAuthController extends APIController
             'name' => 'required',
             'password' => 'required|confirmed|min:8',
             'email' => 'required|email|unique:users',
+            'image' => 'mimes:jpeg,jpg,png,bmp | max:1000'
         ]);
 
         $userData = request(['name','email', 'password']);
@@ -189,6 +191,14 @@ class JwtAuthController extends APIController
 
         $token = auth("api_jwt")->attempt($userData);
         $tokenData = $this->generateAccessTokenDetails($token);
+
+        $profileImageFIleName = $this->generateFileName(Constants::PREFIX_USER_IMAGE_PROFILE . $newUser->id);
+        $profileImageFIleName = "{$profileImageFIleName}.{$request->file('image')->extension()}";
+        $profileImag = $request->file('image')->move(public_path(Constants::DIR_USER_IMAGES), $profileImageFIleName);
+
+        $newUser->image = url(Constants::DIR_USER_IMAGES . $profileImageFIleName);
+
+        $newUser->save();
 
         $response = array_merge($tokenData, $newUser->toArray());
 
@@ -341,10 +351,16 @@ class JwtAuthController extends APIController
             );
         }
 
+        $user = auth("api_jwt")->user();
+        $user->image = $user->image ? $user->image : url(Constants::DIR_USER_IMAGES . Constants::IMG_DEFAULT_USER);
+
+        $responseData = array_merge($this->generateAccessTokenDetails($token), $user->toArray());
+
+
         return $this->sendResponse(
             Constants::HTTP_SUCCESS,
             "User logged in successfully",
-            $this->generateAccessTokenDetails($token)
+                    $responseData
         );
     }
 

@@ -44,4 +44,22 @@ class Constants
     const HTTP_ERROR = 400;
     const HTTP_UNAUTHORIZED = 401;
     const HTTP_FORBIDDEN = 403;
+
+    /**
+     * Prefixes
+     */
+
+    const PREFIX_USER_IMAGE_PROFILE = "user.image.profile.";
+
+    /**
+     * Directories
+     */
+
+    const DIR_USER_IMAGES = "/images/user/";
+
+    /**
+     * Images
+     */
+
+    const IMG_DEFAULT_USER = "default.jpg";
 }
