@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API\V1\Auth\JWT;
 
 use App\Mail\SendResetPasswordOTPMail;
-use App\ResetPasswordOTP;
-use App\ResetPasswordOTPVerification;
-use App\User;
+use App\Models\ResetPasswordOTP;
+use App\Models\ResetPasswordOTPVerification;
+use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
