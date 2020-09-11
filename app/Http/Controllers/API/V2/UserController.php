@@ -20,7 +20,7 @@ class UserController extends UserControllerV1
 
     public function me()
     {
-        $message = "User profile returned successfully";
+        $message = trans("common.success.generic");
         $data = auth("api_jwt")->user();
 
         // Adding a new attribute in v2 that is not in V1
