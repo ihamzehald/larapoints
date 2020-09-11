@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 trait Validators
 {
 
-
     /**
      * @param $otp
      * @param $lifetime
@@ -58,5 +57,4 @@ trait Validators
 
         return false;
     }
-
 }

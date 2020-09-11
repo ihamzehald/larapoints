@@ -342,10 +342,12 @@ class JwtAuthController extends APIController
         ];
 
         if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
-            return $this->sendResponse(Constants::HTTP_ERROR,
+            return $this->sendResponse(
+                Constants::HTTP_ERROR,
                 trans("common.error.generic"),
                 null,
-                $errors);
+                $errors
+            );
         }
 
         $credentials = request(['email', 'password']);
