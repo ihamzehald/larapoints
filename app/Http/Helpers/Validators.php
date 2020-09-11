@@ -48,10 +48,11 @@ trait Validators
      * @param $rules
      * @return bool|\Illuminate\Support\MessageBag
      */
-    public function requestHasErrors($request, $rules){
+    public function requestHasErrors($request, $rules)
+    {
         $validator = Validator::make($request->all(), $rules);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $validator->errors();
         }
 

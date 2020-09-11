@@ -177,7 +177,7 @@ class JwtAuthController extends APIController
             'email' => 'required|email|unique:users',
         ];
 
-        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+        if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
             return $this->sendResponse(
                 Constants::HTTP_ERROR,
                 trans("common.error.generic"),
@@ -341,13 +341,11 @@ class JwtAuthController extends APIController
             'email' => 'required|email',
         ];
 
-        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
-            return $this->sendResponse(
-                    Constants::HTTP_ERROR,
-                    trans("common.error.generic"),
-                    null,
-                    $errors
-                );
+        if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
+            return $this->sendResponse(Constants::HTTP_ERROR,
+                trans("common.error.generic"),
+                null,
+                $errors);
         }
 
         $credentials = request(['email', 'password']);
@@ -697,7 +695,7 @@ class JwtAuthController extends APIController
             'email' => 'required|email'
         ];
 
-        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+        if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
             return $this->sendResponse(
                 Constants::HTTP_ERROR,
                 trans("common.error.generic"),
@@ -880,7 +878,7 @@ class JwtAuthController extends APIController
 
         $requestValidationRules = ['otp' => 'required'];
 
-        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+        if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
             return $this->sendResponse(
                 Constants::HTTP_ERROR,
                 trans("common.error.generic"),
@@ -1065,7 +1063,7 @@ class JwtAuthController extends APIController
             'password' => 'required|confirmed|min:8',
         ];
 
-        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+        if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
             return $this->sendResponse(
                 Constants::HTTP_ERROR,
                 trans("common.error.generic"),
