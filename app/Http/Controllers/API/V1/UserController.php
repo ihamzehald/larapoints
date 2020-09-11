@@ -117,7 +117,7 @@ class UserController extends APIController
 
     public function me()
     {
-        $message = "User profile returned successfully";
+        $message = trans("common.success.generic");
         $data = auth("api_jwt")->user();
 
         return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);

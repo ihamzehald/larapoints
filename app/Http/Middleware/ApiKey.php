@@ -29,14 +29,14 @@ class ApiKey
                     return $next($request);
                 }
 
-                $message = "Invalid API key";
-                $errors = ["api_key" => "Invalid API key"];
+                $message = trans("common.error.api_key_invalid");
+                $errors = ["api_key" => trans("common.error.api_key_invalid")];
 
                 return $this->sendResponse(Constants::HTTP_UNAUTHORIZED, $message, null, $errors);
             }
 
-            $message = "Missing API key header";
-            $errors = ["api_key" => "x-api-key header is missing"];
+            $message = trans("common.error.api_key_missing_msg");
+            $errors = ["api_key" => trans("common.error.api_key_missing_err")];
 
             return $this->sendResponse(Constants::HTTP_UNAUTHORIZED, $message, null, $errors);
         }

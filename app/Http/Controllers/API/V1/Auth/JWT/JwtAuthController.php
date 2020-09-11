@@ -171,11 +171,20 @@ class JwtAuthController extends APIController
      */
     public function register(Request $request)
     {
-        $request->validate([
+        $requestValidationRules = [
             'name' => 'required',
             'password' => 'required|confirmed|min:8',
             'email' => 'required|email|unique:users',
-        ]);
+        ];
+
+        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+            return $this->sendResponse(
+                Constants::HTTP_ERROR,
+                trans("common.error.generic"),
+                null,
+                $errors
+            );
+        }
 
         $userData = request(['name','email', 'password']);
 
@@ -185,7 +194,7 @@ class JwtAuthController extends APIController
             'password' => Hash::make($userData['password']),
         ]);
 
-        $message = "User registered successfully";
+        $message = trans("auth_jwt.success.register");
 
         $token = auth("api_jwt")->attempt($userData);
         $tokenData = $this->generateAccessTokenDetails($token);
@@ -324,18 +333,33 @@ class JwtAuthController extends APIController
      * )
      */
 
-    public function login()
+    public function login(Request $request)
     {
+
+        $requestValidationRules = [
+            'password' => 'required|min:8',
+            'email' => 'required|email',
+        ];
+
+        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+            return $this->sendResponse(
+                    Constants::HTTP_ERROR,
+                    trans("common.error.generic"),
+                    null,
+                    $errors
+                );
+        }
+
         $credentials = request(['email', 'password']);
 
         if (!$token = auth("api_jwt")->attempt($credentials)) {
             $errors = [
-                "wrong_credentials" => "The provided credentials don't match our records"
+                "wrong_credentials" => trans("auth_jwt.error.wrong_credentials")
             ];
 
             return $this->sendResponse(
                 Constants::HTTP_UNAUTHORIZED,
-                "Wrong credentials",
+                trans("auth_jwt.error.wrong_credentials_msg"),
                 null,
                 $errors
             );
@@ -343,7 +367,7 @@ class JwtAuthController extends APIController
 
         return $this->sendResponse(
             Constants::HTTP_SUCCESS,
-            "User logged in successfully",
+            trans("auth_jwt.success.login"),
             $this->generateAccessTokenDetails($token)
         );
     }
@@ -441,7 +465,7 @@ class JwtAuthController extends APIController
     public function logout()
     {
         auth("api_jwt")->logout();
-        $message = "User logged out successfully";
+        $message = trans("auth_jwt.success.logout");
         return $this->sendResponse(Constants::HTTP_SUCCESS, $message, null);
     }
 
@@ -557,7 +581,7 @@ class JwtAuthController extends APIController
     {
         $newToken = auth("api_jwt")->refresh();
         $data = $this->generateAccessTokenDetails($newToken);
-        $message = "JWT token refresh successfully";
+        $message = trans("auth_jwt.success.refresh");
 
         return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);
     }
@@ -669,7 +693,18 @@ class JwtAuthController extends APIController
 
     public function sendResetPasswordOTP(Request $request)
     {
-        $this->isEmailValid($request);
+        $requestValidationRules = [
+            'email' => 'required|email'
+        ];
+
+        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+            return $this->sendResponse(
+                Constants::HTTP_ERROR,
+                trans("common.error.generic"),
+                null,
+                $errors
+            );
+        }
 
         $isUniqueToken = false;
         $user = User::where('email', $request->get('email'))->first();
@@ -678,7 +713,7 @@ class JwtAuthController extends APIController
         if ($user) {
 
             /**
-             * Set all old OPT as expired for this user
+             * Set all old OTP as expired for this user
              */
 
             ResetPasswordOTP::where('user_id', $user->id)
@@ -709,7 +744,7 @@ class JwtAuthController extends APIController
                         Mail::to($user)->send(new SendResetPasswordOTPMail($user, $resetPasswordOtpModel));
 
                         if (empty(Mail::failures())) {
-                            $message = "OTP email sent successfully";
+                            $message = trans("auth_jwt.success.otp_email");
 
                             return $this->sendResponse(Constants::HTTP_SUCCESS, $message);
                         }
@@ -718,7 +753,7 @@ class JwtAuthController extends APIController
             }
         }
 
-        $message = "Oops, something went wrong while trying to send your OTP";
+        $message = trans("auth_jwt.error.otp_email");
 
         return $this->sendResponse(Constants::HTTP_ERROR, $message);
     }
@@ -843,7 +878,16 @@ class JwtAuthController extends APIController
     public function verifyOTP(Request $request)
     {
 
-        $request->validate(['otp' => 'required']);
+        $requestValidationRules = ['otp' => 'required'];
+
+        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+            return $this->sendResponse(
+                Constants::HTTP_ERROR,
+                trans("common.error.generic"),
+                null,
+                $errors
+            );
+        }
 
         $otp = $request->get("otp", null);
 
@@ -874,7 +918,7 @@ class JwtAuthController extends APIController
                         if ($resetPasswordOTPVerificationModel->save()) {
                             $resetPasswordOTPModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
                             if ($resetPasswordOTPModel->save()) {
-                                $message = "OTP verified successfully";
+                                $message = trans("auth_jwt.success.otp_verification");
                                 $data = [
                                     "verification_token" => $uniqueOTPVerificationToken
                                 ];
@@ -885,15 +929,15 @@ class JwtAuthController extends APIController
                     }
                 }
             } else {
-                $message = "This OTP expired";
+                $message = trans("auth_jwt.error.otp_expired");
                 return $this->sendResponse(Constants::HTTP_ERROR, $message);
             }
         } else {
-            $message = "This OTP not valid";
+            $message = trans("auth_jwt.error.otp_invalid");
             return $this->sendResponse(Constants::HTTP_ERROR, $message);
         }
 
-        $message = "Oops, something went wrong";
+        $message = trans("common.error.generic");
         return $this->sendResponse(Constants::HTTP_ERROR, $message);
     }
 
@@ -1016,10 +1060,19 @@ class JwtAuthController extends APIController
 
     public function resetPassword(Request $request)
     {
-        $request->validate([
+        $requestValidationRules = [
             'verification_token' => 'required',
             'password' => 'required|confirmed|min:8',
-        ]);
+        ];
+
+        if($errors = $this->requestHasErrors($request, $requestValidationRules)){
+            return $this->sendResponse(
+                Constants::HTTP_ERROR,
+                trans("common.error.generic"),
+                null,
+                $errors
+            );
+        }
 
         $verificationToken = $request->get("verification_token", null);
         $password = $request->get("password", null);
@@ -1036,7 +1089,7 @@ class JwtAuthController extends APIController
                     if ($user->save()) {
                         $resetPasswordOTPVerificationModel->status = Constants::RESET_PASSWORD_OTP_ACTIVATED;
                         if ($resetPasswordOTPVerificationModel->save()) {
-                            $message = "Password reset successfully";
+                            $message = trans("auth_jwt.success.reset_password");
                             return $this->sendResponse(Constants::HTTP_SUCCESS, $message);
                         }
                     }
@@ -1044,7 +1097,7 @@ class JwtAuthController extends APIController
             }
         }
 
-        $message = "Something went wrong while trying to reset your password";
+        $message = trans("auth_jwt.error.reset_password");
         return $this->sendResponse(Constants::HTTP_ERROR, $message);
     }
 }
