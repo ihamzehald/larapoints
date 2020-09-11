@@ -77,10 +77,10 @@ class Handler extends ExceptionHandler
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        $message = "Unauthorized";
+        $message = trans("common.error.unauthenticated_msg");
 
         $errors = [
-            "unauthorized" => "Unauthorized request"
+            "unauthorized" => trans("common.error.unauthenticated_err")
         ];
 
         return $this->sendResponse(Constants::HTTP_UNAUTHORIZED, $message, null, $errors);
