@@ -38,4 +38,9 @@ trait Generators
             'expires_in' => auth("api_jwt")->factory()->getTTL() * env('JWT_TTL', 60)
         ];
     }
+
+    public function generateFileName($hashPrefix, $length = 64)
+    {
+        return "{$hashPrefix}." . Str::random($length);
+    }
 }
