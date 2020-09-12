@@ -4,20 +4,10 @@ namespace App\Http\Helpers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 trait Validators
 {
-
-    /**
-     * Validate the email for the given request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    public function isEmailValid(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
-    }
 
     /**
      * @param $otp
@@ -49,5 +39,22 @@ trait Validators
         return Carbon::parse($date)->addHours($lifetime)->gte(Carbon::now())
             ? true
             : false;
+    }
+
+    /**
+     * Generic validation error method
+     * @param $request
+     * @param $rules
+     * @return bool|\Illuminate\Support\MessageBag
+     */
+    public function requestHasErrors($request, $rules)
+    {
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        return false;
     }
 }
