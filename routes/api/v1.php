@@ -38,4 +38,5 @@ Route::group([
     'prefix' => 'user/'
 ], function ($router) {
     Route::get('me', 'UserController@me');
+    Route::post('update', 'UserController@update');
 });
