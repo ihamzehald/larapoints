@@ -141,8 +141,7 @@ class UserController extends APIController
             'image' => 'mimes:jpeg,jpg,png,bmp | max:1000'
         ];
 
-        if ( $errors = $this->requestHasErrors($request, $requestValidationRules) )
-        {
+        if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
             return $this->sendResponse(
                 Constants::HTTP_ERROR,
                 $message,
@@ -153,8 +152,7 @@ class UserController extends APIController
 
         $userData = request(['name','email', 'image']);
 
-        if( !empty($userData['image']) )
-        {
+        if(!empty($userData['image'])) {
             //TODO: make this logic generic and add it as a method in helpers
             $profileImageFIleName = $this->generateFileName(Constants::PREFIX_USER_IMAGE_PROFILE . $this->user->id);
             $profileImageFIleName = "{$profileImageFIleName}.{$request->file('image')->extension()}";
@@ -167,8 +165,7 @@ class UserController extends APIController
 
         $this->user->updated_at = Carbon::now()->toDateTimeString();
 
-        if( !$this->user->save() )
-        {
+        if(!$this->user->save()) {
             return $this->sendResponse(
                 Constants::HTTP_ERROR,
                 $message,
@@ -179,6 +176,5 @@ class UserController extends APIController
         $message = trans("common.user.success.update");
 
         return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $this->user);
-
     }
 }
