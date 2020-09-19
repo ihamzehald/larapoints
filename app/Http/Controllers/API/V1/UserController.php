@@ -3,6 +3,8 @@ namespace App\Http\Controllers\API\V1;
 
 use \App\Http\Controllers\API\V1\APIController;
 use App\Http\Helpers\Constants;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class UserController extends APIController
 {
@@ -121,5 +123,58 @@ class UserController extends APIController
         $data = auth("api_jwt")->user();
 
         return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $data);
+    }
+
+    /**
+     * Update user profile
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(\Illuminate\Http\Request $request)
+    {
+
+        $message = trans("common.error.generic");
+
+        $requestValidationRules = [
+            'name' => 'min:2',
+            'email' => 'email|unique:users',
+            'image' => 'mimes:jpeg,jpg,png,bmp | max:1000'
+        ];
+
+        if ($errors = $this->requestHasErrors($request, $requestValidationRules)) {
+            return $this->sendResponse(
+                Constants::HTTP_ERROR,
+                $message,
+                null,
+                $errors
+            );
+        }
+
+        $userData = request(['name','email', 'image']);
+
+        if (!empty($userData['image'])) {
+            //TODO: make this logic generic and add it as a method in helpers
+            $profileImageFIleName = $this->generateFileName(Constants::PREFIX_USER_IMAGE_PROFILE . $this->user->id);
+            $profileImageFIleName = "{$profileImageFIleName}.{$request->file('image')->extension()}";
+            $request->file('image')->move(public_path(Constants::DIR_USER_IMAGES), $profileImageFIleName);
+            $this->user->image = url(Constants::DIR_USER_IMAGES . $profileImageFIleName);
+        }
+
+        !empty($userData['name']) ? $this->user->name = $userData['name'] : "";
+        !empty($userData['email']) ? $this->user->email = $userData['email'] : "";
+
+        $this->user->updated_at = Carbon::now()->toDateTimeString();
+
+        if (!$this->user->save()) {
+            return $this->sendResponse(
+                Constants::HTTP_ERROR,
+                $message,
+                null
+            );
+        }
+
+        $message = trans("common.user.success.update");
+
+        return $this->sendResponse(Constants::HTTP_SUCCESS, $message, $this->user);
     }
 }

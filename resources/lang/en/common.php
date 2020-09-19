@@ -10,5 +10,12 @@ return [
     ],
     "success" => [
         "generic" => "Data returned successfully"
+    ],
+    "user" => [
+        "error" => [
+        ],
+        "success" => [
+            "update" => "User profile updated successfully"
+        ]
     ]
 ];

@@ -184,7 +184,7 @@ Add the virtual host server name to the hosts file (/etc/hosts):
 **User:**
 
 - /user/me
-
+- /user/update
 
 # API versioning
 
