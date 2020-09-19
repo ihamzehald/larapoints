@@ -57,10 +57,11 @@ class APIController extends Controller
     use Validators;
     use Generators;
     use ApiResponse;
-
+    public $user;
 
     public function __construct()
     {
         $this->middleware("apiKey");
+        $this->user = auth("api_jwt")->user();
     }
 }
