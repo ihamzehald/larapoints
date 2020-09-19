@@ -66,5 +66,4 @@ class APIController extends Controller
         $this->user = auth("api_jwt")->user();
     }
 
-
 }
